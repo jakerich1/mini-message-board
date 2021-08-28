@@ -1,0 +1,65 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+main{
+  margin: auto;
+  width: 100%;
+  max-width: 600px;
+}
+
+.message-list{
+  margin-top: 1em;
+}
+
+.message-item{
+  border: 1px solid black;
+  border-radius: 8px;
+  margin-bottom: 1em;
+}
+
+.message-head{
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+  padding: 8px;
+}
+
+.message-body{
+  padding: 8px;
+}
+
+input{
+  display: block;
+  width: 80%;
+  padding: 8px;
+  font-size: 21px;
+  margin-bottom: 8px;
+  border: 1px solid grey;
+  border-radius: 8px;
+}
+
+button{
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  font-size: 21px;
+  border-radius: 8px;
+  background: rgb(226, 226, 226);
+  border: none;
+}
+
+button:hover{
+  background: rgb(196, 196, 196);
+}
