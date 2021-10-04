@@ -3,6 +3,7 @@ const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const FacebookTokenStrategy = require('passport-facebook-token');
 const User = require('./models/userModel');
+require('dotenv').config();
 
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
@@ -45,5 +46,5 @@ passport.use('facebookToken', new FacebookTokenStrategy({
 
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'test',
+  secretOrKey: process.env.JWT,
 }, (jwtPayload, done) => done(null, jwtPayload)));

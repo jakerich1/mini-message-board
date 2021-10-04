@@ -7,9 +7,13 @@ const logger = require('morgan');
 require('./passport');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cors = require('cors');
+require('dotenv').config();
+const compression = require('compression');
+const helmet = require('helmet');
 
 // Database config
-const mongoDb = 'mongodb+srv://jrich01:ZxrRhwLjszfCP59@cluster0.qa0dh.mongodb.net/odinbook?retryWrites=true&w=majority';
+const mongoDb = process.env.DBURI;
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
@@ -31,6 +35,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
+app.use(compression());
+app.use(helmet());
+
+// Configure CORS
+const corsOptions = {
+  origin: [process.env.CORS1, process.env.CORS2],
+  optionsSuccessStatus: 200, // For legacy browser support
+};
+
+app.use(cors(corsOptions));
 
 // Define routes
 app.use('/un', indexRouter); // Unprotected routes

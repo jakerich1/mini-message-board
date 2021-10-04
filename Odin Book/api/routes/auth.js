@@ -2,6 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
+require('dotenv').config();
 
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -15,7 +16,7 @@ router.post('/facebook', (req, res, next) => {
 
     const payload = { _id: user._id };
 
-    jwt.sign(payload, 'test', { expiresIn: '1d' }, (jwtErr, token) => {
+    jwt.sign(payload, process.env.JWT, { expiresIn: '1d' }, (jwtErr, token) => {
       if (jwtErr) return res.status(400).json(jwtErr);
       res.json({ token });
     });
