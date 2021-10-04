@@ -18,6 +18,8 @@ db.on('error', console.error.bind(console, 'mongo connection error'));
 const indexRouter = require('./routes/index');
 const auth = require('./routes/auth');
 const user = require('./routes/user');
+const post = require('./routes/post');
+const comment = require('./routes/comment');
 
 // Express app initialization
 const app = express();
@@ -31,11 +33,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 // Define routes
-app.use('/', indexRouter); // Unprotected routes
+app.use('/un', indexRouter); // Unprotected routes
 // Login via jwt auth + sign up route
 app.use('/auth', auth);
-// Protected via jwt authentication
+// Protected user routes via jwt authentication
 app.use('/user', passport.authenticate('jwt', { session: false }), user);
+// Protected post routes via jwt authentication
+app.use('/post', passport.authenticate('jwt', { session: false }), post);
+// Protected comment routes via jwt authentication
+app.use('/comment', passport.authenticate('jwt', { session: false }), comment);
 
 app.use((req, res) => {
   res.status(404).send('route not found');

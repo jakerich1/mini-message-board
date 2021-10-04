@@ -24,7 +24,13 @@ passport.use('facebookToken', new FacebookTokenStrategy({
       facebook: {
         id: profile.id,
         email: profile.emails[0].value,
+        first_name: profile.name.givenName,
+        last_name: profile.name.familyName,
       },
+      profile_picture: './placeholder.png',
+      created: new Date(),
+      active: true,
+      relationship_status: 'single',
     });
 
     // Save new user to DB and pass through User info
