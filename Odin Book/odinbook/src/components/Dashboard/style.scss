@@ -1,0 +1,156 @@
+.dashboard-wrap{
+    height: 100%;
+    background: #f0f2f5;
+
+    nav{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 0.75em;
+        box-shadow: 0px 0px 3px 3px #ebebeb;
+
+        a{
+            text-decoration: none;
+
+            h1{
+                color: #1877f2;
+                font-size: 32px;
+            }
+        }
+
+        .nav-control{
+            display: flex;
+            align-items: center;
+
+            .profile{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 4px 8px 4px 4px;
+                background: white;
+                border-radius: 200px;
+                cursor: pointer;
+                transition: all 0.1s ease-in;
+                margin-right: 8px;
+
+                &:hover{
+                    background: #ececec;
+                }
+
+                img{
+                    display: block;
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 24px;
+                    margin-right: 8px;
+                }
+            }
+
+            button{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.5em 1em;
+                background: #1877f2;
+                border: none;
+                border-radius: 200px;
+                color: white;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.1s ease-in;
+
+                &:hover{
+                    filter: brightness(0.9);
+                }
+            }
+        }
+        
+    }
+
+    main{
+        margin: auto;
+        max-width: 680px;
+        width: 100%;
+        padding: 1em;
+
+        .new-post{
+            padding: 1em;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 2px 2px 1px 1px #e0e0e0;
+
+            form{
+
+                .top{
+                    display: flex;
+                    align-items: flex-start;
+
+                    img{
+                        width: 42px;
+                        height: 42px;
+                        border-radius: 21px;
+                    }
+
+                    textarea{
+                        display: block;
+                        width: 100%;
+                        padding: 8px 0 8px 16px;
+                        margin-left: 8px;
+                        resize: none;
+                        overflow: hidden;
+                        min-height: 42px;
+                        height: 42px;
+                        border-radius: 21px;
+                        border: none;
+                        background: #f0f2f5;
+
+                        &:focus{
+                            outline: none;
+                        }
+                    }
+                }
+
+                .divider{
+                    border-bottom: 1px solid rgb(206, 206, 206);
+                    margin: 0.5em 0;
+                }
+
+                .submit{
+
+                    button{
+                        background: #1877f2;
+                        border: none;
+                        border-radius: 200px;
+                        color: white;
+                        padding: 0.5em 1em;
+                        cursor: pointer;
+                        font-weight: 500;
+                        transition: all 0.1s ease-in;
+
+                        &:hover{
+                            filter: brightness(0.9);
+                        }
+                    }
+                }
+            }
+        }
+
+        .more-posts{
+            display: block;
+            width: max-content;
+            margin: auto;
+            margin-top: 2em;
+            border: none;
+            padding: 1em 2em;
+            cursor: pointer;
+            border-radius: 400px;
+            background: #cccccc;
+            transition: all 0.1s ease-in;
+
+            &:hover{
+                filter: brightness(0.9);
+            }
+        }
+    }
+}
