@@ -29,9 +29,9 @@ function useProvideAuth() {
 
   const signout = () => {
     FacebookLoginClient.logout(() => {
+      localStorage.removeItem('jwt-fe');
       setUser(false);
       setJWT('');
-      localStorage.removeItem('jwt-fe');
     });
   };
 

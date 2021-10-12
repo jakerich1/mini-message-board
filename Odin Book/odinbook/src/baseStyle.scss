@@ -9,3 +9,19 @@
 html, body, #root, .App{
     height: 100%;
 }
+
+body{
+    background: #f0f2f5;
+}
+
+.icon-tabler-rotate-clockwise{
+    animation: spin 2s linear 0s infinite;
+}
+
+@keyframes spin { 
+    100% { transform: rotate(360deg); } 
+}
+
+.post-content{
+    padding: 0.5em 0;
+}
