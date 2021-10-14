@@ -59,7 +59,7 @@ function Dashboard() {
             { headers: {
                 Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
             }});
-            
+
             setPost('');
             setPosts([])
             setRefresh(!refresh);
@@ -108,10 +108,7 @@ function Dashboard() {
                         />
                     })}
 
-                    <button 
-                    className='more-posts'
-                    onClick={handleMore}
-                    >
+                    <button className='more-posts' onClick={handleMore} >
                         More posts
                     </button>`
 

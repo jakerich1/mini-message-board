@@ -3,6 +3,7 @@ import SignIn from './components/SignIn/SignIn';
 import { useAuth } from "./useAuth";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import Profile from "./components/Profile/Profile";
 import './baseStyle.scss';
 
 function App() {
@@ -28,12 +29,14 @@ function App() {
         )
         }
         ></Route>
+
         <PrivateRoute path="/dashboard">
           <Dashboard />
         </PrivateRoute>
-        <Route path="/test">
-          <Dashboard />
-        </Route>
+
+        <PrivateRoute path="/profile">
+          <Profile />
+        </PrivateRoute>
       </Switch>
       
     </div>
