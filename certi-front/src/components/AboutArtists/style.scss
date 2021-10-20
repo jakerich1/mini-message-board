@@ -1,0 +1,50 @@
+#about-artists{
+    padding: 10em 4em 4em 4em;
+
+    .about-title{
+        color: white;
+        font-weight: 800;
+        font-size: 77px;
+        line-height: 77px;
+        margin-bottom: 4px;
+
+        &:first-child{
+            color: #03DAC5;
+        }
+    }
+
+    .sub{
+        padding-top: 0.5em;
+        color: white;
+        font-size: 28px;
+        margin-bottom: 5.5em;
+    }
+
+    .container{
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+
+        .card{
+            max-width: 420px;
+
+            img{
+                display: block;
+                margin-bottom: 2em;
+            }
+
+            .card-title{
+                color: #03DAC5;
+                font-size: 28px;
+                line-height: 50px;
+                margin-bottom: 0.5em;
+            }
+
+            .card-content{
+                color: #BCBCBC;
+                font-size: 28px;
+                line-height: 50px;
+            }
+        }
+    }
+}

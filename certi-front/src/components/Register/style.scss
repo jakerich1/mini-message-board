@@ -1,0 +1,65 @@
+#register{
+    padding: 4em 0 6em 0;
+    background: #1A1C24;
+
+    h1{
+        text-align: center;
+        color: white;
+        font-size: 60px;
+        font-weight: 600;
+        margin-bottom: 1em;
+    }
+
+    .container{
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        gap: 2em;
+
+        .card{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 795px;
+            padding: 2em;
+            border-radius: 35px;
+
+            .c-title{
+                text-align: left;
+                font-size: 35px;
+                font-weight: 600;
+                line-height: 80px;
+                color: white;
+            }
+
+            .c-content{
+                font-size: 32px;
+                line-height: 50px;
+                color: white;
+            }
+
+            button{
+                align-self: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 3em;
+                width: 376px;
+                height: 75px;
+                border-radius: 38px;
+                background: #ECBF08;
+                border: 1px solid #ECBF08;
+                color: white;
+                font-weight: 500;
+                font-size: 22px;
+                cursor: pointer;
+                transition: all 0.1s ease;
+
+                &:hover{
+                    filter: brightness(0.95);
+                }
+            }
+        }
+    }
+}

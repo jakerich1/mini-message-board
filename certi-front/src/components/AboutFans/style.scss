@@ -1,0 +1,64 @@
+.about-fans{
+    padding: 2em 0 6em 0;
+    background: #1A1C24;
+
+    .about-title{
+        text-align: center;
+        font-weight: 800;
+        font-size: 77px;
+        color: white;
+        padding-bottom: 30px;
+
+        span{
+            font-weight: 800;
+            color: #03DAC5;
+        }
+    }
+
+    p{
+        font-size: 32px;
+        text-align: center;
+        color: white;
+        padding-bottom: 2.5em;
+    }
+
+    .container{
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        gap: 2em;
+        
+        .card{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            max-width: 400px;
+            background: #32333C;
+            border-radius: 32px;
+            padding: 3em 1em 1em 1em;
+
+            img{
+                display: block;
+                width: 104px;
+                height: auto;
+                margin-bottom: 2em;
+            }
+
+            .card-head{
+                text-align: center;
+                font-size: 28px;
+                line-height: 50px;
+                color: #03DAC5;
+                margin-bottom: 1.5em;
+            }
+
+            p{
+                text-align: center;
+                font-size: 26px;
+                line-height: 35px;
+                color: #BCBCBC;
+            }
+        }
+    }
+}
