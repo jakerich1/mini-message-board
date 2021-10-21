@@ -1,6 +1,12 @@
 .about-fans{
-    padding: 2em 0 6em 0;
+    padding: 2em 1em 6em 1em;
     background: #1A1C24;
+
+    @media screen and (max-width: 1025px) {
+        & {
+            padding: 1em;
+        }
+    }
 
     .about-title{
         text-align: center;
@@ -13,6 +19,19 @@
             font-weight: 800;
             color: #03DAC5;
         }
+
+        @media screen and (max-width: 1025px) {
+            & {
+                padding-bottom: 15px;
+                font-size: 40px;
+            }
+        }
+
+        @media screen and (max-width: 760px) {
+            & {
+                display: none;
+            }
+        }
     }
 
     p{
@@ -20,6 +39,19 @@
         text-align: center;
         color: white;
         padding-bottom: 2.5em;
+
+        @media screen and (max-width: 1025px) {
+            & {
+                font-size: 20px;
+                padding-bottom: 1.5em;
+            }
+        }
+
+        @media screen and (max-width: 760px) {
+            & {
+                display: none;
+            }
+        }   
     }
 
     .container{
@@ -27,22 +59,60 @@
         align-items: stretch;
         justify-content: center;
         gap: 2em;
+
+        @media screen and (max-width: 760px) {
+            & {
+                flex-direction: column;
+                gap: 1em;
+            }
+        }
         
         .card{
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            max-width: 400px;
             background: #32333C;
+            max-width: 400px;
             border-radius: 32px;
             padding: 3em 1em 1em 1em;
+            transition: all 0.2s ease-in-out;
+            transform-origin: center;
+
+            &:hover{
+                transform: translateY(-20px);
+            }
+
+            @media screen and (max-width: 760px) {
+                & {
+                    max-width: none;
+                    width: 100%;
+                    padding: 2em;
+                }
+
+                &:hover{
+                    transform: scale(0.9);
+                }
+            }
 
             img{
                 display: block;
                 width: 104px;
                 height: auto;
                 margin-bottom: 2em;
+
+                @media screen and (max-width: 1025px) {
+                    & {
+                        width: 60px;
+                        margin-bottom: 1em;
+                    }
+                }
+
+                @media screen and (max-width: 760px) {
+                    & {
+                        width: 69px;
+                    }
+                }
             }
 
             .card-head{
@@ -51,13 +121,41 @@
                 line-height: 50px;
                 color: #03DAC5;
                 margin-bottom: 1.5em;
+
+                @media screen and (max-width: 1025px) {
+                    & {
+                        font-size: 14px;
+                        line-height: 25px;
+                        margin-bottom: 0.75em;
+                    }
+                }
+
+                @media screen and (max-width: 760px) {
+                    & {
+                        font-size: 16px;
+                    }
+                }
             }
 
             p{
+                display: block;
                 text-align: center;
                 font-size: 26px;
                 line-height: 35px;
                 color: #BCBCBC;
+
+                @media screen and (max-width: 1025px) {
+                    & {
+                        font-size: 12px;
+                        line-height: 18px;
+                    }
+                }
+
+                @media screen and (max-width: 760px) {
+                    & {
+                        text-align: left;
+                    }
+                }
             }
         }
     }

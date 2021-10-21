@@ -4,11 +4,69 @@
     justify-content: center;
     aspect-ratio: 2.7/1;
     background: #03DAC5;
+    padding: 2em 4em;
 
-    p{
+    @media screen and (max-width: 769px) {
+        & {
+            aspect-ratio: unset;
+            height: 328px;
+            padding: 2.5em 2em;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+    }
+
+    #desktop-content{
         text-align: center;
         font-size: 34px;
         color: white;
         letter-spacing: 3.4px;
+
+        @media screen and (max-width: 1025px) {
+            & {
+                font-size: 30px;
+            }
+        }
+
+        @media screen and (max-width: 769px) {
+            & {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 612px) {
+            & {
+                font-size: 21px;
+            }
+        }
+    }
+
+    #mobile-content{
+        display: none;
+
+        @media screen and (max-width: 769px) {
+            & {
+                display: block;
+            }
+        }
+
+        .about-title{
+            text-align: left;
+            font-weight: 800;
+            font-size: 20px;
+            color: white;
+            padding-bottom: 15px;
+    
+            span{
+                font-weight: 800;
+                color: #03DAC5;
+            }
+        }
+    
+        p{
+            font-size: 14px;
+            text-align: left;
+            color: white;
+        }
     }
 }

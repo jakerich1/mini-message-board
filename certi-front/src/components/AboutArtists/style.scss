@@ -1,6 +1,18 @@
 #about-artists{
     padding: 10em 4em 4em 4em;
 
+    @media screen and (max-width: 1000px) {
+        & {
+            padding: 4em;
+        }
+    }
+
+    @media screen and (max-width: 760px) {
+        & {
+            padding: 212px 28px 40px 28px;
+        }
+    }
+
     .about-title{
         color: white;
         font-weight: 800;
@@ -11,6 +23,20 @@
         &:first-child{
             color: #03DAC5;
         }
+
+        @media screen and (max-width: 1000px) {
+            & {
+                font-size: 40px;
+                line-height: 40px;
+            }
+        }
+
+        @media screen and (max-width: 760px) {
+            & {
+                font-size: 20px;
+                line-height: 25px;
+            }
+        }
     }
 
     .sub{
@@ -18,32 +44,169 @@
         color: white;
         font-size: 28px;
         margin-bottom: 5.5em;
+
+        @media screen and (max-width: 1280px) {
+            & {
+                margin-bottom: 3em;
+            }
+        }
+
+        @media screen and (max-width: 760px) {
+            & {
+                font-size: 14px;
+                line-height: 20px;
+                padding-top: 0;
+                margin-bottom: 0em;
+            }
+        }
     }
 
     .container{
         display: flex;
         justify-content: space-between;
         align-items: stretch;
+        gap: 2em;
+
+        @media screen and (max-width: 1000px) {
+            & {
+                align-items: stretch;
+                flex-direction: column;
+            }
+        }
+
+        @media screen and (max-width: 760px) {
+            & {
+                display: none;
+            }
+        }
 
         .card{
             max-width: 420px;
 
+            @media screen and (max-width: 1000px) {
+                & {
+                    display: flex;
+                    align-items: center;
+                    max-width: max-content;
+                }
+            }
+
             img{
                 display: block;
+                width: 104px;
+                height: 104px;
                 margin-bottom: 2em;
+
+                @media screen and (max-width: 1000px) {
+                    & {
+                        margin-bottom: 0;
+                    }
+                }
             }
 
-            .card-title{
+            .detail{
+
+                @media screen and (max-width: 1000px) {
+                    & {
+                        padding-left: 2em;
+                    }
+                }
+
+                .card-title{
+                    color: #03DAC5;
+                    font-size: 28px;
+                    line-height: 50px;
+                    margin-bottom: 0.5em;
+    
+                    @media screen and (max-width: 1280px) {
+                        & {
+                            font-size: 22px;
+                            line-height: 40px;
+                            margin-bottom: 0.25em;
+                        }
+                    }
+                }
+    
+                .card-content{
+                    color: #BCBCBC;
+                    font-size: 28px;
+                    line-height: 50px;
+    
+                    @media screen and (max-width: 1280px) {
+                        & {
+                            font-size: 22px;
+                            line-height: 40px;
+                        }
+                    }
+                }
+            }    
+        }
+    }
+}
+
+.mobile-cards{
+    display: none;
+    padding: 2em 1em 6em 1em;
+
+    @media screen and (max-width: 760px) {
+        & {
+            display: block;
+            padding: 1em;
+        }
+    }
+
+    .container{
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        flex-direction: column;
+        gap: 1em;
+        
+        .card{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background: #32333C;
+            max-width: 400px;
+            border-radius: 32px;
+            padding: 2em;
+            transition: all 0.2s ease-in-out;
+            transform-origin: center;
+
+            @media screen and (max-width: 760px) {
+
+                & {
+                    max-width: none;
+                    width: 100%;
+                }
+
+                &:hover{
+                    transform: scale(0.9);
+                }
+            }
+
+            img{
+                display: block;
+                width: 69px;
+                height: auto;
+                margin-bottom: 1em;
+            }
+
+            .card-head{
+                text-align: center;
+                font-size: 16px;
+                line-height: 25px;
                 color: #03DAC5;
-                font-size: 28px;
-                line-height: 50px;
-                margin-bottom: 0.5em;
+                margin-bottom: 0.75em;
             }
 
-            .card-content{
+            p{
+                display: block;
+                text-align: left;
+                font-size: 12px;
+                line-height: 18px;
                 color: #BCBCBC;
-                font-size: 28px;
-                line-height: 50px;
             }
         }
     }

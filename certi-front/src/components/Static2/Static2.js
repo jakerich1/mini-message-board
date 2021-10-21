@@ -12,7 +12,13 @@ function Static2() {
             
         }}
     >
-        <p>Another powerful phrase here as a separation</p>
+        <p id='desktop-content'>Another powerful phrase here as a separation</p>
+    
+        <div id='mobile-content'>
+          <h1 className='about-title'><span>C3RTI</span> For Music Fans</h1>
+          <p>Discover & empower upcoming artists<br /> before anyone else</p>
+        </div>
+
     </div>
   );
 }

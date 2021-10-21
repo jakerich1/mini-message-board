@@ -4,11 +4,27 @@
     justify-content: center;
     aspect-ratio: 3.6/1;
     background: #03DAC5;
+    padding: 2em 4em;
+
+    @media screen and (max-width: 769px) {
+        & {
+            aspect-ratio: unset;
+            padding: 4em 2em;
+            height: 252px;
+        }
+    }
 
     p{
         text-align: center;
         font-size: 34px;
         color: white;
         letter-spacing: 3.4px;
+
+        @media screen and (max-width: 769px) {
+            & {
+                font-size: 14px;
+                line-height: 27px;
+            }
+        }
     }
 }
