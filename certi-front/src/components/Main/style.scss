@@ -1,8 +1,15 @@
 main{
+    min-height: 710px;
     height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr;
     background: linear-gradient(236deg, #32333C00 0%, #32333C01 17%, #1A1C24 100%) 0% 0% no-repeat;
+
+    @media screen and (max-height: 710px) {
+        & {
+            grid-template-rows: auto auto;
+        }
+    }
 
     nav{
         display: flex;

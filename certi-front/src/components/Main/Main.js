@@ -1,30 +1,60 @@
 import { useState } from 'react';
+import { InView } from 'react-intersection-observer';
 import './style.scss';
 
 function Main(props) {
-
-    // State which triggers the animation for the background image
-    const [animate, setAnimate] = useState(false);
-    // DEV PURPOSES --- trigger animation. Change to component load and ad delay
-    const handleAnimate = () => { setAnimate(!animate);}
 
     const [mobileNav, setMobileNav] = useState(false)
     const toggleNav = () => {
         setMobileNav(!mobileNav)
     }
 
+    // Function which helps to appropriately size the bg image for animation purposes
+    const setSize = () => {
+        if(props.screenWidth > 1500) return ['100%', '115%', '30%, 30%', '30%, 30%']
+        if(props.screenWidth > 1360) return ['115%', '132%', '30%, 30%', '30%, 30%']
+        if(props.screenWidth > 1215) return ['125%', '144%', '30%, 30%', '30%, 30%']
+        if(props.screenWidth > 1050) return ['150%', '173%', '30%, 30%', '30%, 30%']
+        if(props.screenWidth > 850) return ['190%', '219%', '30%, 30%', '30%, 30%']
+        if(props.screenWidth > 790) return ['220%', '253%', '30%, 30%', '30%, 30%']
+        return ['cover', 'cover', '40%, 50%', '40%, 50%']
+    }
+
+    // Function is called wheever this component moves in or out of the view port
+    const toggleAnimate = async (view) => {
+
+        const container = document.querySelector(`#main`)
+
+        if(!view) {
+            container.style.backgroundSize = setSize()[1]
+            container.style.backgroundPosition = setSize()[3]
+            return
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        if(props.screenWidth > 760){
+            container.style.backgroundSize = setSize()[0]
+            container.style.backgroundPosition = setSize()[2]
+        }
+    }
+
     return (
-        <main
+        <InView 
+        as="main" 
+        onChange={
+            (inView) => toggleAnimate(inView)
+        }
         id='main' 
         style={{ 
             backgroundImage: 'linear-gradient(236deg, #32333C00 0%, #32333C01 17%, #1A1C24 100%), url("./images/Landing_page_bg.png")', 
-            backgroundPosition: props.screenWidth < 700 ? '40% 50%' : '30% 30%', 
-            backgroundSize: 'cover', 
+            backgroundPosition: setSize()[3], 
+            backgroundSize: setSize()[1], 
             backgroundRepeat: 'no-repeat',
-            transition: 'background-size 2s ease-in-out, background-position 2s ease-in-out',
+            transition: 'all 2s ease-in-out'
         }}>
             <nav>
-                <svg onClick={handleAnimate} xmlns="http://www.w3.org/2000/svg" width="186.324" height="29.818" viewBox="0 0 186.324 29.818">
+                <svg xmlns="http://www.w3.org/2000/svg" width="186.324" height="29.818" viewBox="0 0 186.324 29.818">
                     <path fill='#fff' className="a" d="M25.444,5.441a1.5,1.5,0,0,1,.346.862,1.148,1.148,0,0,1-1.228,1.168,1,1,0,0,1-.887-.456,10.846,10.846,0,0,0-9.288-4.642C6.912,2.373,2.592,8.333,2.592,14.9S6.912,27.436,14.386,27.436a10.884,10.884,0,0,0,9.288-4.627,1,1,0,0,1,.887-.476A1.143,1.143,0,0,1,25.77,23.5a1.529,1.529,0,0,1-.346.867A13.374,13.374,0,0,1,14.386,29.8C5.659,29.8,0,23.11,0,14.9S5.659,0,14.386,0A13.379,13.379,0,0,1,25.444,5.441Z" transform="translate(0 0.006)"/>
                     <path fill='#fff' className="a" d="M290.472,30.131a1.278,1.278,0,0,1-1.3-1.3V3.348H279.83a1.175,1.175,0,0,1,0-2.351h21.253a1.168,1.168,0,1,1,0,2.331h-9.318v25.5a1.268,1.268,0,0,1-1.293,1.3Z" transform="translate(-138.976 -0.493)"/>
                     <path fill='#fff' className="a" d="M367.838,29.884a1.273,1.273,0,0,1-1.3-1.3V1.718a1.3,1.3,0,0,1,2.592,0V28.586a1.273,1.273,0,0,1-1.293,1.3Z" transform="translate(-182.807 -0.247)"/>
@@ -111,7 +141,7 @@ function Main(props) {
                 </div>
 
             </div>
-        </main>
+        </InView>
     );
   }
   

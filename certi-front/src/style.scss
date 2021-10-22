@@ -22,3 +22,10 @@ html, body, #root, .app{
 body{
     background: #1A1C24;
 }
+
+.preload * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+  }

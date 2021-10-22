@@ -11,33 +11,34 @@ import AboutArtists from './components/AboutArtists/AboutArtists';
 
 function App() {
 
-  const [view, setView] = useState('6')
-
+  const [view, setView] = useState('1')
   const [screenWidth, setScreenWidth] = useState(0)
-  //const [screenHeight, setScreenHeight] = useState(0)
+
   // Update scree size state upon resize
   useEffect(() => {
-      const getDimensions = () => {
-          setScreenWidth(window.innerWidth)
-          //setScreenHeight(window.innerHeight)
-      }
+    const getDimensions = () => {
+        setScreenWidth(window.innerWidth)
+    }
 
-      getDimensions()
-      window.addEventListener('resize', getDimensions);
+    getDimensions()
+    window.addEventListener('resize', getDimensions);
 
-      return () => {
-          window.removeEventListener('resize', getDimensions);
-      }
-  }, [])
+    window.addEventListener('load', () => {
+      var element = document.querySelector("body");
+      element.classList.remove("preload");
+    });
 
-  useEffect(() => {
     window.addEventListener('keypress', e => {
       const string = e.key
       if(/^\d+$/.test(string)){
         setView(string)
       } 
     });
-  }, []);
+
+    return () => {
+      window.removeEventListener('resize', getDimensions);
+    }
+  }, [])
 
   return (
     <div className="App">
@@ -47,7 +48,7 @@ function App() {
         <Main screenWidth={screenWidth} />
         <AppView />
         <Static1 />
-        <Register />
+        <Register screenWidth={screenWidth} />
         <AboutArtists />
         {
           screenWidth < 760 
@@ -74,7 +75,7 @@ function App() {
 
       {view === '4' ? 
       <>
-        <Register />
+        <Register screenWidth={screenWidth} />
       </> : ''}
 
       {view === '5' ? 
