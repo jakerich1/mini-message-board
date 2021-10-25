@@ -12,7 +12,6 @@ html, body, #root, .app{
     height: 100%;
     position: relative;
     overflow-x: hidden;
-    
 }
 
 #root{
@@ -28,4 +27,5 @@ body{
     -moz-transition: none !important;
     -ms-transition: none !important;
     -o-transition: none !important;
+    transition: none !important;
   }

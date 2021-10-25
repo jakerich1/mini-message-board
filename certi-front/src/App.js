@@ -1,5 +1,6 @@
 import './style.scss';
 import { useState, useEffect } from 'react';
+import { useScroll } from './hooks/useScroll';
 import Main from './components/Main/Main';
 import Footer from './components/Footer/Footer';
 import AppView from './components/AppView/AppView';
@@ -11,8 +12,10 @@ import AboutArtists from './components/AboutArtists/AboutArtists';
 
 function App() {
 
-  const [view, setView] = useState('1')
+  const [view, setView] = useState('0')
   const [screenWidth, setScreenWidth] = useState(0)
+
+  useScroll()
 
   // Update scree size state upon resize
   useEffect(() => {

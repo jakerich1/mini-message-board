@@ -25,14 +25,17 @@ function Main(props) {
 
         const container = document.querySelector(`#main`)
 
+        // Run when Main component is not in view
         if(!view) {
             container.style.backgroundSize = setSize()[1]
-            container.style.backgroundPosition = setSize()[3]
+            container.style.backgroundPosition = setSize()[3] 
             return
         }
 
+        // Delay 1 second before triggering animation
         await new Promise(resolve => setTimeout(resolve, 1000))
         
+        //Only trigger animation if we are in desktop layout
         if(props.screenWidth > 760){
             container.style.backgroundSize = setSize()[0]
             container.style.backgroundPosition = setSize()[2]
