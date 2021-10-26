@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, createContext } from 'react';
+import React, { useState, useContext, createContext, useEffect } from 'react';
 import { FacebookLoginClient } from '@greatsumini/react-facebook-login';
-
-const axios = require('axios').default;
+import { callSignIn, callCheckAuth } from './api/api';
 
 const authContext = createContext();
 
@@ -13,18 +12,21 @@ export const useAuth = () => useContext(authContext);
 // Provider hook that creates auth object and handles state
 function useProvideAuth() {
   const [user, setUser] = useState(false);
+  const [loading, setLoading] = useState(true)
   const [jwt, setJWT] = useState('');
 
+  useEffect(() => {
+    checkAuth()
+}, [])
+
   const signin = async (access_token) => {
-    try {
-      const responseData = await axios.post(`http://localhost:5000/auth/facebook?access_token=${access_token}`);
-      localStorage.setItem('jwt-fe', responseData.data.token);
-      setJWT(responseData.data.token);
+    callSignIn(access_token).then(res => {
+      localStorage.setItem('jwt-fe', res.data.token);
+      setJWT(res.data.token);
       setUser(true);
-      return true
-    } catch (error) {
-      return error;
-    }
+    }).catch(errors => {
+      console.log(errors)
+    })
   };
 
   const signout = () => {
@@ -36,22 +38,19 @@ function useProvideAuth() {
   };
 
   const checkAuth = async () => {
-    try {
-      await axios.get('http://localhost:5000/user/', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-        },
-      });
-
+    callCheckAuth().then(res => {
       setUser(true);
-    } catch (error) {
+      setLoading(false);
+    }).catch(errors => {
       setUser(false);
-    }
+      setLoading(false);
+    })
   };
 
   // Return the user object and auth methods
   return {
     user,
+    loading,
     jwt,
     signin,
     signout,

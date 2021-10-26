@@ -1,52 +1,38 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { likeComment, fetchCommentInfo } from "../../../api/api";
 import './style.scss';
 
 function Comment(props) {
 
-    const axios = require('axios');
-
-    const [infoRefresh, setInfoRefresh] = useState(true);
     const [likes, setLikes] = useState(0);
     const [liked, setLiked] = useState(false);
     const [liking, setLiking] = useState(false);
+    const [infoRefresh, setInfoRefresh] = useState(true);
 
     const handleLike = async () => {
-        try{
-            setLiking(true)
-            await axios.post(`http://localhost:5000/comment/${props.data._id}/like`, {}, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-                },
-            });
+        setLiking(true)
+        likeComment(props.data._id).then(res => {
             setInfoRefresh(!infoRefresh)  
             setLiking(false)
-        }catch(errors){
+        }).catch(errors => {
             setLiking(false)
-            console.log(errors);
-        }
+        })
     }
 
     useEffect(() => {
-
-        const fetchInfo = async () => {
-            try{
-                const infoResult = await axios.get(`http://localhost:5000/comment/${props.data._id}/info`, 
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-                    },
-                });
-                console.log(infoResult.data)
-                setLikes(infoResult.data.like_count)
-                setLiked(infoResult.data.is_liked ? true : false)
-            }catch(errors){
-                console.log(errors);
+        let isSubscribed = true
+        fetchCommentInfo(props.data._id).then(res => {
+            if(isSubscribed){
+                setLikes(res.data.like_count)
+                setLiked(res.data.is_liked ? true : false)
             }
-        }
-        fetchInfo();
-
-    }, [infoRefresh, axios, props.data._id])
+        }).catch(errors => {
+            if(isSubscribed){
+                console.log(errors);
+            } 
+        })
+        return () => isSubscribed = false
+    }, [infoRefresh, props.data._id])
 
     return (
         <div className='comment'>

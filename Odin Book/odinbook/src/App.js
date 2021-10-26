@@ -6,9 +6,11 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Profile from "./components/Profile/Profile";
 import './baseStyle.scss';
 
-function App() {
+function App(props) {
 
   const auth = useAuth();
+
+  auth.checkAuth()
 
   return (
     <div className="App">
@@ -30,11 +32,11 @@ function App() {
         }
         ></Route>
 
-        <PrivateRoute path="/dashboard">
+        <PrivateRoute exact path="/dashboard">
           <Dashboard />
         </PrivateRoute>
 
-        <PrivateRoute path="/profile">
+        <PrivateRoute exact path="/profile">
           <Profile />
         </PrivateRoute>
       </Switch>

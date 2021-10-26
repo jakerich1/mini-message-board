@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import FbLogin from '../FbLogin/FbLogin';
 import './style.scss';
 
-function SignIn() {
+function SignIn(props) {
 
   const auth = useAuth();
   let history = useHistory();
@@ -19,7 +19,6 @@ function SignIn() {
 
   return (
     <div className='signIn-wrap'>
-
         <div className='inner-wrap'>
             <div className='header'>
                 <h1>OdinBook</h1>
@@ -29,9 +28,6 @@ function SignIn() {
                 <FbLogin auth={auth} />
             </div>
         </div>
-        
-         
-      
     </div>
   );
 }

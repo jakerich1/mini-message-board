@@ -1,123 +1,98 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { likePost, fetchPostInfo, fetchComments, submitComment } from "../../api/api";
 import Comment from './Comment/Comment';
 import './style.scss';
 
 function Post(props) {
 
-    const axios = require('axios');
-    const [commentCount, setCommentCount] = useState(0);
+    // Post state
+    const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
+    const [commentCount, setCommentCount] = useState(0);
+    const [refreshInfo, setRefreshInfo] = useState(true);
     const [fetchingInfo, setFetchingInfo] = useState(false);
+    
+    // Comment state
+    const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('');
     const [viewComment, setViewComment] = useState(false);
-    const [submittingComment, setSubmittingComment] = useState(false);
-    const [fetchingComments, setFetchingComments] = useState(false);
-    const [comments, setComments] = useState([])
-    const [refreshInfo, setRefreshInfo] = useState(true);
     const [refreshContent, setRefreshContent] = useState(true);
-    const [liked, setLiked] = useState(false);
-
-    const toggleCommentView = () => {
-        setViewComment(!viewComment)
-    }
-
-    // Toggle liking of a post
-    const toggleLike = async () => {
-        try{
-            await axios.post(`http://localhost:5000/post/${props.data._id}/like`, {}, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-                },
-            });
-            setRefreshInfo(!refreshInfo);
-        }catch(errors){
-            console.log(errors);
-        }
-    }
-
-    // Method to fetch comments of a post
-    useEffect(() => {
-
-        const fetchComments = async () => {
-            try{
-                setFetchingComments(true)
-                const responseData = await axios.get(`http://localhost:5000/comment/?postId=${props.data._id}`, {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-                    },
-                });
-                console.log(responseData.data);
-                setComments(responseData.data);
-                setFetchingComments(false);
-            }catch(errors){
-                setFetchingComments(false);
-                console.log(errors);
-            }
-        }
-
-        if(viewComment){
-            fetchComments()
-        }
-
-    }, [axios, props.data._id, viewComment, refreshContent])
+    const [fetchingComments, setFetchingComments] = useState(false);
+    const [submittingComment, setSubmittingComment] = useState(false);
 
     // Lifecycle method to get info of post
     useEffect(() => {
-        const fetchInfo = async () => {
-            try {
-                setFetchingInfo(true)
-                const responseData = await axios.get(`http://localhost:5000/post/${props.data._id}/info`, {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-                    },
-                });
-                setCommentCount(responseData.data.comment_count);
-                setLikeCount(responseData.data.like_count);
+        let isSubscribed = true
+        setFetchingInfo(true)
+        fetchPostInfo(props.data._id).then(res => {
+            if(isSubscribed){
+                setCommentCount(res.data.comment_count);
+                setLikeCount(res.data.like_count);
+                setLiked(res.data.is_liked ? true : false);
                 setFetchingInfo(false);
-                setLiked(responseData.data.is_liked ? true : false);
-                
-            } catch (error) {
-                setFetchingInfo(false);
-                return error;
             }
-        }
-        fetchInfo();
-    }, [axios, props.data._id, refreshInfo])
+        }).catch(errors => {
+            if(isSubscribed){
+                setFetchingInfo(false);
+            }
+        })
+        return () => isSubscribed = false
+    }, [props.data._id, refreshInfo])
 
-    // Handle state update
-    const handleComment = (e) => {
-        setNewComment(e.target.value);
+    // Method to fetch comments of a post
+    useEffect(() => {
+        let isSubscribed = true
+        if(viewComment && commentCount > 0){
+            setFetchingComments(true)
+            fetchComments(props.data._id).then(res => {
+                if(isSubscribed){
+                    console.log(res.data);
+                    setComments(res.data);
+                    setFetchingComments(false);
+                }
+            }).catch(errors => {
+                if(isSubscribed){
+                    setFetchingComments(false);
+                    console.log(errors)
+                } 
+            })
+        }
+        return () => isSubscribed = false
+    }, [props.data._id, viewComment, refreshContent, commentCount])
+
+    // Toggle liking of a post
+    const toggleLike = async () => {
+        likePost(props.data._id).then(res => {
+            setRefreshInfo(!refreshInfo);
+        }).catch(errors => {
+            console.log(errors);
+        })
     }
+
     // Auto grow text area for new post
     function auto_grow(e) {
         e.target.style.height = "5px";
         e.target.style.height = (e.target.scrollHeight)+"px";
     }
-    // Handle submitio of new comment
+
+    // Handle submit of new comment
     const handleSubmit = async (e) => {
         e.preventDefault();
         if(newComment.length === 0) { return }
-        try{
-            setSubmittingComment(true);
-            const request = await axios.post(`http://localhost:5000/comment/`, 
-            {
-                content: newComment,
-                postId: props.data._id,
-            },
-            { headers: { Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`, } });
+        setSubmittingComment(true);
 
+        submitComment(newComment, props.data._id).then(res => {
             setSubmittingComment(false);
             setNewComment('');
             setRefreshInfo( !refreshInfo );
             setRefreshContent( !refreshContent );
-            console.log(request.data);
-        }catch(errors){
+            console.log(res.data);
+        }).catch(errors => {
             console.log(errors);
             setNewComment('')
             setSubmittingComment(false);
-        }
+        })   
     }
 
     return (
@@ -152,7 +127,7 @@ function Post(props) {
                         </svg>
                     </div>
 
-                    <div onClick={toggleCommentView} style={{ display: fetchingInfo ? 'none' : 'flex' }} className='comments'>
+                    <div onClick={() => {setViewComment(!viewComment)}} style={{ display: fetchingInfo ? 'none' : 'flex' }} className='comments'>
                         {commentCount} {commentCount === 1 ? 'comment' : 'comments' }
                     </div>
 
@@ -172,7 +147,7 @@ function Post(props) {
                     </svg>
                     { liked ? 'unlike' : 'Like' }
                 </div>
-                <div onClick={toggleCommentView}>
+                <div onClick={() => {setViewComment(!viewComment)}}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-message-dots" width="24" height="24" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#1877f2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4" />
@@ -205,7 +180,7 @@ function Post(props) {
                         <textarea 
                         placeholder='write comment here'
                         value={newComment}
-                        onInput={e => { handleComment(e); auto_grow(e) } } >
+                        onInput={e => { setNewComment(e.target.value); auto_grow(e) } } >
                         </textarea>
                         <button>
                             <svg style={{ display: submittingComment ? 'block' : 'none' }} xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width="28" height="28" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff" fill="none" strokeLinecap="round" strokeLinejoin="round">

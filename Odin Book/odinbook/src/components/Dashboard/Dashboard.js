@@ -1,74 +1,57 @@
-import { useAuth } from '../../useAuth';
-import { Link } from 'react-router-dom';
-import './style.scss';
 import { useEffect, useState } from 'react';
+import { fetchPosts, submitPost } from '../../api/api';
 import Post from '../Post/Post';
-import DashRequest from '../DashRequest/DashRequest';
-import SideNav from '../SideNav/SideNav';
 import TopNav from '../TopNav/TopNav';
+import SideNav from '../SideNav/SideNav';
+import DashRequest from '../DashRequest/DashRequest';
+import './style.scss';
 
 function Dashboard() {
 
-    const auth = useAuth();
-    const axios = require('axios');
-
-    // Logic for fetching posts 
-    const [refresh, setRefresh] = useState(true);
+    // State initializatios
     const [page, setPage] = useState(1);
+    const [post, setPost] = useState('');
     const [posts, setPosts] = useState([]);
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const responseData = await axios.get(`http://localhost:5000/post/?page=${page}`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-                    },
-                });
-                let updatedPosts = [...posts]
+    const [refresh, setRefresh] = useState(true);
+    const [fetchingPosts, setFetchingPosts] = useState(false);
 
-                responseData.data.forEach(element => {
+    // Fetch posts whenever the page changes or the refresh state changes
+    useEffect(() => {
+        setFetchingPosts(true)
+        let isSubscribed = true
+        fetchPosts(page).then(res => {
+            if (isSubscribed) {
+                let updatedPosts = [...posts]
+                res.data.forEach(element => {
                     updatedPosts.push(element)
                 });
+                setFetchingPosts(false)
                 setPosts(updatedPosts)
                 console.log(updatedPosts);
-
-            } catch (error) {
-                return error;
             }
-        }
-        fetchPosts()
-    }, [page, axios, auth.user, refresh])
-    // Update the current page which the calls for extra posts
-    const handleMore = () => {
-        setPage(page+1)
-    }
-
-    // Post control 
-    const [post, setPost] = useState('');
-    // Update the state for the new post input
-    const handlePost = (e) => {
-        setPost(e.target.value)
-    }
+        }).catch(errors => {
+            if (isSubscribed){
+                setFetchingPosts(false)
+            }
+        })
+        return () => isSubscribed = false
+    }, [page, refresh])
+    
     // Handle post submit
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if(post.length === 0){ return}
-    
-        try {
-            await axios.post(`http://localhost:5000/post/`, { content: post},
-            { headers: {
-                Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`,
-            }});
+        if(post.length === 0){ return }
 
+        submitPost(post).then(res => {
             setPost('');
             setPosts([])
-            setRefresh(!refresh);
             setPage(1);
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.log(error);
-        }
-      };
+            setRefresh(!refresh);
+        }).catch(errors => {
+            console.log(errors);
+        })       
+    };
+
     // Auto grow text area for new post
     function auto_grow(e) {
         e.target.style.height = "5px";
@@ -77,20 +60,16 @@ function Dashboard() {
 
     return (
         <div className='dashboard-wrap'>
-
             <TopNav />
-
-            <main>
-                
+            <main> 
                 <SideNav />
 
                 <div className='timeline'>
-
                     <div className='new-post'>
                         <form onSubmit={handleSubmit}>
                             <div className='top'>
                                 <img src='./images/46.jpg' alt='profile mini'/>
-                                <textarea name='post' value={post} onInput={e => { handlePost(e); auto_grow(e) } } placeholder='Whats on your mind, Jacob?'></textarea>
+                                <textarea name='post' value={post} onInput={e => { setPost(e.target.value); auto_grow(e) } } placeholder='Whats on your mind, Jacob?'></textarea>
                             </div>
                             <div className='divider'></div>
                             <div className='submit'>
@@ -101,6 +80,10 @@ function Dashboard() {
                         </form>
                     </div>
 
+                    <svg style={{ display: fetchingPosts ? 'block' : 'none', margin: 'auto', marginTop: '1em' }} xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width="80" height="80" viewBox="0 0 24 24" strokeWidth="1" stroke="#9e9e9e" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
+                    </svg>
+
                     {posts.map((post) => {
                         return <Post 
                             key={post._id} 
@@ -108,17 +91,15 @@ function Dashboard() {
                         />
                     })}
 
-                    <button className='more-posts' onClick={handleMore} >
+                    <button style={{ display: fetchingPosts ? 'none' : 'block' }} className='more-posts' onClick={() => setPage(page+1) } >
                         More posts
                     </button>`
-
                 </div>
                 
                 <div className='nav-right'>
                     <DashRequest />
                 </div>
             </main>
-        
         </div>
     );
 }

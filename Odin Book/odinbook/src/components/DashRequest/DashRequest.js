@@ -1,69 +1,54 @@
-import { useAuth } from '../../useAuth';
-import { Link } from 'react-router-dom';
-import './style.scss';
 import { useEffect, useState } from 'react';
-import Post from '../Post/Post';
+import { fetchRequests, acceptRequest, declineRequest } from '../../api/api';
+import './style.scss';
 
 function DashRequest() {
 
-    const auth = useAuth();
-    const axios = require('axios');
-
     const [request, setRequest] = useState(0)
-    const [requesting, setRequesting] = useState(false)
     const [declining, setDeclining] = useState(false)
+    const [requesting, setRequesting] = useState(false)
     const [toggleFetch, setToggleFetch] = useState(true)
 
     useEffect(() => {
-        const fetchRequest = async () => {
-            try{
-                const responseData = await axios.get(`http://localhost:5000/user/request`, { 
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt-fe')}`, },
-                });
-                setRequest(responseData.data.recipient_requests ? responseData.data.recipient_requests[0] : 0)
-            }catch(errors){
-                console.log(errors)
+        let isSubscribed = true
+        fetchRequests().then(res => {
+            if(isSubscribed) {
+                setRequest(res.data.recipient_requests ? res.data.recipient_requests[0] : 0)
             }
-        }
-        fetchRequest()
-    }, [axios, toggleFetch])
+        }).catch(errors => {
+            if(isSubscribed) { console.log(errors) }
+        })
+        return () => isSubscribed = false
+    }, [toggleFetch])
 
-    const acceptRequest = async () => {
+    const acceptRequestClient = async () => {
         if(request){
-            try{
-                setRequesting(true)
-                const responseData = await axios.put(`http://localhost:5000/user/request/${request._id}`, {}, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt-fe')}` }
-                });
-                console.log(responseData);
+            setRequesting(true)
+            acceptRequest(request._id).then(res => {
+                console.log(res);
                 setRequesting(false)
                 setRequest(0)
                 setToggleFetch(!toggleFetch)
-            }catch(errors){
+            }).catch(errors => {
                 setRequesting(false)
                 console.log(errors);
-            }
+            })
         }
-        return false
     }
 
-    const declineRequest = async () => {
+    const declineRequestClient = async () => {
         if(request){
-            try{
-                setDeclining(true)
-                const responseData = await axios.delete(`http://localhost:5000/user/request/${request._id}`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt-fe')}` }
-                });
-                console.log(responseData);
+            setDeclining(true)
+            declineRequest(request._id).then(res => {
+                console.log(res);
                 setDeclining(false)
                 setRequest(0)
                 setToggleFetch(!toggleFetch)
-            }catch(errors){
+            }).catch(errors => {
                 setDeclining(false)
                 console.log(errors);
-            }
+            })     
         }
-        return false
     }
 
     return (
@@ -81,14 +66,14 @@ function DashRequest() {
                     </div>
                 </div>
                 <div className='fr-action'>
-                    <button onClick={acceptRequest}>
+                    <button onClick={acceptRequestClient}>
                         <svg style={{ display: requesting ? 'block' : 'none', marginLeft: '10px', marginRight: '10px' }} xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff" fill="none" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
                         </svg>
                         <span style={{ display: requesting ? 'none' : 'block' }}>accept</span>
                     </button>
-                    <button onClick={declineRequest}>
+                    <button onClick={declineRequestClient}>
                         <svg style={{ display: declining ? 'block' : 'none', marginLeft: '10px', marginRight: '10px' }} xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff" fill="none" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
