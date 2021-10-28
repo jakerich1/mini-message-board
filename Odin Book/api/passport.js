@@ -28,7 +28,7 @@ passport.use('facebookToken', new FacebookTokenStrategy({
         first_name: profile.name.givenName,
         last_name: profile.name.familyName,
       },
-      profile_picture: './placeholder.png',
+      profile_picture: './images/pp.png',
       created: new Date(),
       active: true,
       relationship_status: 'single',
@@ -46,5 +46,5 @@ passport.use('facebookToken', new FacebookTokenStrategy({
 
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT,
+  secretOrKey: 'test',
 }, (jwtPayload, done) => done(null, jwtPayload)));

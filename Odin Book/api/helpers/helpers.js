@@ -20,11 +20,11 @@ function checkFriend(req, res, next) {
     const friends = [];
 
     results.recipient_requests.forEach((element) => {
-      friends.push(element.issuer);
+      friends.push(element.issuer.toString());
     });
 
     results.issuer_requests.forEach((element) => {
-      friends.push(element.recipient);
+      friends.push(element.recipient.toString());
     });
 
     req.friends = friends;

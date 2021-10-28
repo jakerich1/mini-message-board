@@ -2,6 +2,9 @@
   "name": "jwtauth",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "14.17.6"
+  },
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
@@ -19,6 +22,7 @@
     "express-validator": "^6.12.1",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
+    "luxon": "^2.0.2",
     "mongoose": "^6.0.5",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.12",

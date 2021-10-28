@@ -13,7 +13,7 @@ const compression = require('compression');
 const helmet = require('helmet');
 
 // Database config
-const mongoDb = process.env.DBURI;
+const mongoDb = 'mongodb+srv://jrich01:ZxrRhwLjszfCP59@cluster0.qa0dh.mongodb.net/odinbook?retryWrites=true&w=majority';
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
@@ -40,7 +40,7 @@ app.use(helmet());
 
 // Configure CORS
 const corsOptions = {
-  origin: [process.env.CORS1, process.env.CORS2],
+  origin: ['https://localhost:3000', 'http://localhost:5000'],
   optionsSuccessStatus: 200, // For legacy browser support
 };
 

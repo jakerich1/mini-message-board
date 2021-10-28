@@ -6,6 +6,7 @@ const { body, validationResult } = require('express-validator');
 const async = require('async');
 const Request = require('../models/requestModel');
 const User = require('../models/userModel');
+const Post = require('../models/postModel');
 const { checkFriend } = require('../helpers/helpers');
 
 const router = express.Router();
@@ -131,6 +132,47 @@ router.post('/testuser', (req, res) => {
   });
 });
 
+// Get list of a users posts
+router.get('/:id/posts', checkFriend, (req, res) => {
+  // Only return posts if they belong to the user or a friend of the user
+  if (req.friends.includes(req.params.id) || req.user._id === req.params.id) {
+    // Set pagination info
+    const resultsPerPage = 10;
+    let page = req.query.page >= 1 ? req.query.page : 1;
+    page -= 1;
+
+    Post.find({ user: req.params.id })
+      .sort({ created: 'desc' })
+      .limit(resultsPerPage)
+      .skip(resultsPerPage * page)
+      .exec(((err, data) => {
+      // Handle db error
+        if (err) { res.status(500).send(err); }
+        res.status(200).json(data);
+      }));
+  } else {
+    res.send('is not a friend');
+  }
+});
+
+router.get('/myposts', (req, res) => {
+  // Set pagination info
+  const resultsPerPage = 10;
+  let page = req.query.page >= 1 ? req.query.page : 1;
+  page -= 1;
+
+  Post.find({ user: req.user._id })
+    .sort({ created: 'desc' })
+    .limit(resultsPerPage)
+    .skip(resultsPerPage * page)
+    .populate('user', 'profile_picture facebook.firstname facebook.first_name facebook.last_name')
+    .exec(((err, data) => {
+      // Handle db error
+      if (err) { res.status(500).send(err); }
+      res.status(200).json(data);
+    }));
+});
+
 // Create a new friend request
 router.post('/:id/request', (req, res) => {
   // Construct new Request object
@@ -222,11 +264,12 @@ router.get('/request', (req, res) => {
   // Async requests for both request as recipient and issuer
   async.parallel({
     recipient_requests(callback) {
-      Request.find({ recipient: req.user._id })
+      Request.find({ recipient: req.user._id, status: 'pending' })
+        .populate('issuer', 'profile_picture facebook.firstname facebook.first_name facebook.last_name')
         .exec(callback);
     },
     issuer_requests(callback) {
-      Request.find({ issuer: req.user._id })
+      Request.find({ issuer: req.user._id, status: 'pending' })
         .exec(callback);
     },
   }, (err, results) => {
@@ -237,8 +280,30 @@ router.get('/request', (req, res) => {
 });
 
 // Get all the User ID's of users friends
-router.get('/friends', checkFriend, (req, res) => {
+router.get('/friendsId', checkFriend, (req, res) => {
   res.status(200).json(req.friends);
+});
+
+router.get('/users', (req, res) => {
+  User.find()
+    .select('-active -facebook.id -facebook.email')
+    .sort({ created: 'desc' })
+    .exec(((err, data) => {
+      // Handle db error
+      if (err) { res.status(500).send(err); }
+      res.status(200).json(data);
+    }));
+});
+
+router.get('/:id', checkFriend, (req, res) => {
+  User.findById(req.params.id)
+    .select('-active -facebook.id -facebook.email')
+    .exec((err, data) => {
+      if (err) { res.status(500).send(err); }
+      const dataCopy = { ...data.toObject() };
+      dataCopy.isFriends = req.friends.includes(req.params.id);
+      res.status(200).json(dataCopy);
+    });
 });
 
 module.exports = router;

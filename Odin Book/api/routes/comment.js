@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const async = require('async');
 const Comment = require('../models/commentModel');
 const CommentLike = require('../models/commentLikesModel');
 
@@ -15,11 +16,11 @@ router.get('/', (req, res) => {
   const postId = escape(req.query.postId);
 
   Comment.find({ post: postId })
+    .populate('user', 'profile_picture facebook.firstname facebook.first_name facebook.last_name')
     .sort({ created: 'asc' })
     .exec((err, data) => {
       // Handle db error
       if (err) { res.status(500).send(err); }
-
       res.status(200).json(data);
     });
 });
@@ -33,6 +34,14 @@ router.post('/', [
     .withMessage('Content must be specified')
     .isLength({ max: 1000 })
     .withMessage('Content exceeds maximum length, 1,000 characters')
+    .escape(),
+
+  body('postId')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('PostId must be specified')
+    .isLength({ max: 1000 })
+    .withMessage('PostId exceeds maximum length, 1,000 characters')
     .escape(),
 
   (req, res) => {
@@ -81,7 +90,7 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-// Like/Unlike a post
+// Like/Unlike a comment
 router.post('/:id/like', (req, res) => {
   // If no validation errors
   const newLIkeComment = new CommentLike({
@@ -90,7 +99,7 @@ router.post('/:id/like', (req, res) => {
     comment: req.params.id,
   });
 
-  CommentLike.findOne({ user: req.user._id, post: req.params.id })
+  CommentLike.findOne({ user: req.user._id, comment: req.params.id })
     .exec((err, commentLIkeResult) => {
       if (err) { return res.status(500).send(err); }
       if (commentLIkeResult) {
@@ -107,6 +116,21 @@ router.post('/:id/like', (req, res) => {
         });
       }
     });
+});
+
+router.get('/:id/info', (req, res) => {
+  async.parallel({
+    like_count(callback) {
+      CommentLike.countDocuments({ comment: req.params.id }, callback);
+    },
+    is_liked(callback) {
+      // Find if comment is liked by current user
+      CommentLike.findOne({ user: req.user._id, comment: req.params.id }, callback);
+    },
+  }, (err, results) => {
+    if (err) { return res.status(500).send(err); }
+    res.json(results);
+  });
 });
 
 module.exports = router;

@@ -2,59 +2,32 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const async = require('async');
 const Post = require('../models/postModel');
+const Comment = require('../models/commentModel');
 const PostLike = require('../models/postLikesModel');
 const { checkFriend } = require('../helpers/helpers');
 
 const router = express.Router();
 
 // Get paginated posts of current friends
-router.get('/', (req, res) => {
-  res.send('Not yet built');
-});
+router.get('/', checkFriend, (req, res) => {
+  console.log(req.friends);
 
-// Get specific post
-router.get('/:id', checkFriend, (req, res) => {
-  // Find post by id
-  Post.findById(req.params.id, (err, postResult) => {
-    if (err) { return res.status(500).send(err); }
+  const resultsPerPage = 10;
+  let page = req.query.page >= 1 ? req.query.page : 1;
+  page -= 1;
 
-    if (postResult) {
-      // If post has been found
-      if (req.friends.includes(postResult.user) || req.user._id === postResult.user.toString()) {
-        // Return data only if poster is a friend of the current user or belongs to current user
-        res.json(postResult);
-      } else {
-        res.status(401).send('not a friend');
-      }
-    } else {
-      res.status(404).send('unable to find post');
-    }
-  });
-});
-
-// Delete specific post
-router.delete('/:id', (req, res) => {
-  // Find post by id
-  Post.findById(req.params.id, (err, postResult) => {
-    if (err) { return res.status(500).send(err); }
-
-    if (postResult) {
-      // If post has been found
-      if (req.user._id === postResult.user.toString()) {
-        Post.findByIdAndDelete(req.params.id, (deleteErr) => {
-          // Handle db error
-          if (deleteErr) res.status(500).send(deleteErr);
-          // If successfull
-          res.status(202).send('Post removed');
-        });
-      } else {
-        res.status(401).send('not correct user');
-      }
-    } else {
-      res.status(404).send('unable to find post');
-    }
-  });
+  Post.find()
+    .sort({ created: 'desc' })
+    .limit(resultsPerPage)
+    .skip(resultsPerPage * page)
+    .populate('user', 'profile_picture facebook.firstname facebook.first_name facebook.last_name')
+    .exec(((err, data) => {
+      // Handle db error
+      if (err) { res.status(500).send(err); }
+      res.status(200).json(data);
+    }));
 });
 
 // Create new post
@@ -122,6 +95,69 @@ router.post('/:id/like', (req, res) => {
         });
       }
     });
+});
+
+// Get specific post
+router.get('/:id', checkFriend, (req, res) => {
+  // Find post by id
+  Post.findById(req.params.id, (err, postResult) => {
+    if (err) { return res.status(500).send(err); }
+
+    if (postResult) {
+      // If post has been found
+      if (req.friends.includes(postResult.user) || req.user._id === postResult.user.toString()) {
+        // Return data only if poster is a friend of the current user or belongs to current user
+        res.json(postResult);
+      } else {
+        res.status(401).send('not a friend');
+      }
+    } else {
+      res.status(404).send('unable to find post');
+    }
+  });
+});
+
+// Get specific post info (comment numbers, like numbers)
+router.get('/:id/info', checkFriend, (req, res) => {
+  async.parallel({
+    comment_count(callback) {
+      Comment.countDocuments({ post: req.params.id }, callback);
+    },
+    like_count(callback) {
+      PostLike.countDocuments({ post: req.params.id }, callback);
+    },
+    is_liked(callback) {
+      // Find if post is liked by current user
+      PostLike.findOne({ user: req.user._id, post: req.params.id }, callback);
+    },
+  }, (err, results) => {
+    if (err) { return res.status(500).send(err); }
+    res.json(results);
+  });
+});
+
+// Delete specific post
+router.delete('/:id', (req, res) => {
+  // Find post by id
+  Post.findById(req.params.id, (err, postResult) => {
+    if (err) { return res.status(500).send(err); }
+
+    if (postResult) {
+      // If post has been found
+      if (req.user._id === postResult.user.toString()) {
+        Post.findByIdAndDelete(req.params.id, (deleteErr) => {
+          // Handle db error
+          if (deleteErr) res.status(500).send(deleteErr);
+          // If successfull
+          res.status(202).send('Post removed');
+        });
+      } else {
+        res.status(401).send('not correct user');
+      }
+    } else {
+      res.status(404).send('unable to find post');
+    }
+  });
 });
 
 module.exports = router;
