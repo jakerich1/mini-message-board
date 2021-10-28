@@ -24,9 +24,10 @@
                 border-radius: 200px;
                 cursor: pointer;
                 transition: all 0.1s ease-in;
+                box-shadow: 2px 2px 1px 1px #ebebeb;
 
                 &:hover{
-                    filter: brightness(0.9);
+                    filter: brightness(0.95);
                 }
 
                 .icon{

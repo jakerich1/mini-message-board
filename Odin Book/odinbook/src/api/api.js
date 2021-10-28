@@ -59,15 +59,27 @@ export const acceptRequest = async (requestId) => {
 }
 
 export const declineRequest = async (requestId) => {
-    return axios.delete(`http://localhost:5000/user/request/${requestId}`, headerConfig);
+    return axios.delete(`user/request/${requestId}`, headerConfig);
+}
+
+export const fetchUsers = async () => {
+    return axios.get(`user/users`, headerConfig);
+}
+
+export const fetchFriendsId = async () => {
+    return axios.get('user/friendsId', headerConfig);
+}
+
+export const userInfo = async (userId) => {
+    return axios.get(`user/${userId}`, headerConfig);
 }
 
 // Authentication handling
 
 export const callSignIn = async (token) => {
-    return axios.post(`http://localhost:5000/auth/facebook?access_token=${token}`)
+    return axios.post(`auth/facebook?access_token=${token}`)
 }
 
 export const callCheckAuth = async () => {
-    return axios.get('http://localhost:5000/user/', headerConfig)
+    return axios.get('user/', headerConfig)
 }

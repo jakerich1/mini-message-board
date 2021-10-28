@@ -1,16 +1,17 @@
+import { useAuth } from "./useAuth";
 import { Switch, Route, Redirect } from "react-router-dom";
 import SignIn from './components/SignIn/SignIn';
-import { useAuth } from "./useAuth";
-import Dashboard from "./components/Dashboard/Dashboard";
-import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Profile from "./components/Profile/Profile";
+import UsersPage from "./components/UsersPage/UsersPage";
+import Dashboard from "./components/Dashboard/Dashboard";
+import RequestsPage from "./components/RequestsPage/RequestsPage";
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import './baseStyle.scss';
+import User from "./components/User/User";
 
-function App(props) {
+function App() {
 
   const auth = useAuth();
-
-  auth.checkAuth()
 
   return (
     <div className="App">
@@ -39,6 +40,23 @@ function App(props) {
         <PrivateRoute exact path="/profile">
           <Profile />
         </PrivateRoute>
+
+        <PrivateRoute exact path="/users">
+          <UsersPage />
+        </PrivateRoute>
+
+        <PrivateRoute exact path='/u/:id'>
+          <User />
+        </PrivateRoute>
+
+        <PrivateRoute path='/u'>
+          <Redirect to='/users' />
+        </PrivateRoute>
+
+        <PrivateRoute exact path="/requests">
+          <RequestsPage />
+        </PrivateRoute>
+
       </Switch>
       
     </div>
