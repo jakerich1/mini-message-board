@@ -1,5 +1,6 @@
 import { useAuth } from "./useAuth";
 import { Switch, Route, Redirect } from "react-router-dom";
+import User from "./components/User/User";
 import SignIn from './components/SignIn/SignIn';
 import Profile from "./components/Profile/Profile";
 import UsersPage from "./components/UsersPage/UsersPage";
@@ -7,7 +8,6 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import RequestsPage from "./components/RequestsPage/RequestsPage";
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import './baseStyle.scss';
-import User from "./components/User/User";
 
 function App() {
 
@@ -26,7 +26,6 @@ function App() {
             <Redirect
                 to={{
                     pathname: "/dashboard",
-                    state: { from: location }
                 }}
             />
         )

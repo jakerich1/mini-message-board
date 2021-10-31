@@ -16,7 +16,8 @@ function DashRequest() {
                 setRequest(res.data.recipient_requests ? res.data.recipient_requests[0] : 0)
             }
         }).catch(errors => {
-            if(isSubscribed) { console.log(errors) }
+            if(isSubscribed) {
+            }
         })
         return () => isSubscribed = false
     }, [toggleFetch])
@@ -25,13 +26,11 @@ function DashRequest() {
         if(request){
             setRequesting(true)
             acceptRequest(request._id).then(res => {
-                console.log(res);
                 setRequesting(false)
                 setRequest(0)
                 setToggleFetch(!toggleFetch)
             }).catch(errors => {
                 setRequesting(false)
-                console.log(errors);
             })
         }
     }
@@ -40,13 +39,11 @@ function DashRequest() {
         if(request){
             setDeclining(true)
             declineRequest(request._id).then(res => {
-                console.log(res);
                 setDeclining(false)
                 setRequest(0)
                 setToggleFetch(!toggleFetch)
             }).catch(errors => {
                 setDeclining(false)
-                console.log(errors);
             })     
         }
     }

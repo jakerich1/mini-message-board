@@ -5,21 +5,26 @@ import TopNav from "../TopNav/TopNav";
 import SideNav from "../SideNav/SideNav";
 import './style.scss';
 
-function Profile(props) {
+function Profile() {
 
-    const [page, setPage] = useState(1)
     const [posts, setPosts] = useState([])
     const [fetchingPosts, setFetchingPosts] = useState(false)
 
     useEffect(() => {
+        let isSubscribed = true
         fetchMyPosts().then(res => {
-            console.log(res.data)
-            setFetchingPosts(false)
-            setPosts(res.data)
+            if(isSubscribed){
+                setFetchingPosts(false)
+                setPosts(res.data)
+            }
         }).catch(errors => {
-            console.log(errors)
+            if(isSubscribed){
+                //console.log(errors)
+            }
         })
-    }, [page])
+
+        return () => { isSubscribed = false }
+    }, [])
 
     return (
         <div>

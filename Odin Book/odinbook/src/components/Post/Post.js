@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { likePost, fetchPostInfo, fetchComments, submitComment } from "../../api/api";
 import Comment from './Comment/Comment';
 import './style.scss';

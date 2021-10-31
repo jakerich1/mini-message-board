@@ -1,9 +1,9 @@
-import TopNav from '../TopNav/TopNav';
-import SideNav from '../SideNav/SideNav';
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchUsers, fetchFriendsId } from '../../api/api';
+import TopNav from '../TopNav/TopNav';
+import SideNav from '../SideNav/SideNav';
 import './style.scss';
-import { Link } from 'react-router-dom';
 
 function UsersPage(props) {
 
@@ -59,8 +59,8 @@ function UsersPage(props) {
                         <div className='grid-cont'>
                             {users.map((user) => {
                                 return (
-                                    <Link to={`/u/${user._id}`}>
-                                        <div key={user._id} className='friend-item'>
+                                    <Link key={user._id} to={`/u/${user._id}`}>
+                                        <div className='friend-item'>
                                             <img alt='profile' src={user.profile_picture} />
                                             <div className='name'>{user.facebook.first_name} {user.facebook.last_name}</div>
                                         </div>
@@ -76,12 +76,12 @@ function UsersPage(props) {
                         </div>
 
                         <div className='grid-cont'>
-                            {friends.map((user) => {
+                            {friends.map((friend) => {
                                 return (
-                                    <Link to={`/u/${user._id}`}>
-                                        <div key={user._id} className='friend-item'>
-                                            <img alt='profile' src={user.profile_picture} />
-                                            <div className='name'>{user.facebook.first_name} {user.facebook.last_name}</div>
+                                    <Link key={friend._id} to={`/u/${friend._id}`}>
+                                        <div className='friend-item'>
+                                            <img alt='profile' src={friend.profile_picture} />
+                                            <div className='name'>{friend.facebook.first_name} {friend.facebook.last_name}</div>
                                         </div>
                                     </Link>
                                 );

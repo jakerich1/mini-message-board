@@ -1,3 +1,4 @@
+import { useAuth } from "../../useAuth";
 import { useEffect, useState } from 'react';
 import { fetchPosts, submitPost } from '../../api/api';
 import Post from '../Post/Post';
@@ -7,6 +8,10 @@ import DashRequest from '../DashRequest/DashRequest';
 import './style.scss';
 
 function Dashboard() {
+
+    const auth = useAuth();
+
+    const compJwt = localStorage.getItem('jwt-fe'); 
 
     // State initializatios
     const [page, setPage] = useState(1);
@@ -19,23 +24,26 @@ function Dashboard() {
     useEffect(() => {
         setFetchingPosts(true)
         let isSubscribed = true
-        fetchPosts(page).then(res => {
-            if (isSubscribed) {
-                let updatedPosts = [...posts]
-                res.data.forEach(element => {
-                    updatedPosts.push(element)
-                });
-                setFetchingPosts(false)
-                setPosts(updatedPosts)
-                console.log(updatedPosts);
-            }
-        }).catch(errors => {
-            if (isSubscribed){
-                setFetchingPosts(false)
-            }
-        })
+
+        if(auth.user && compJwt){
+            fetchPosts(page).then(res => {
+                if (isSubscribed) {
+                    let updatedPosts = [...posts]
+                    res.data.forEach(element => {
+                        updatedPosts.push(element)
+                    });
+                    setFetchingPosts(false)
+                    setPosts(updatedPosts)
+                }
+            }).catch(errors => {
+                if (isSubscribed){
+                    setFetchingPosts(false)
+                }
+            })
+        }
+        
         return () => isSubscribed = false
-    }, [page, refresh])
+    }, [auth.user, page, refresh, compJwt])
     
     // Handle post submit
     const handleSubmit = async (event) => {

@@ -2,6 +2,7 @@
 import React, { useState, useContext, createContext, useEffect } from 'react';
 import { FacebookLoginClient } from '@greatsumini/react-facebook-login';
 import { callSignIn, callCheckAuth } from './api/api';
+import jwt_decode from "jwt-decode";
 
 const authContext = createContext();
 
@@ -47,6 +48,8 @@ function useProvideAuth() {
     })
   };
 
+  const jwtPayload = jwt ? jwt_decode(jwt)._id : ''
+
   // Return the user object and auth methods
   return {
     user,
@@ -55,6 +58,7 @@ function useProvideAuth() {
     signin,
     signout,
     checkAuth,
+    jwtPayload
   };
 }
 
