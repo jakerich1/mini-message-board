@@ -136,22 +136,16 @@ router.post('/testuser', (req, res) => {
 router.get('/:id/posts', checkFriend, (req, res) => {
   // Only return posts if they belong to the user or a friend of the user
   if (req.friends.includes(req.params.id) || req.user._id === req.params.id) {
-    // Set pagination info
-    const resultsPerPage = 10;
-    let page = req.query.page >= 1 ? req.query.page : 1;
-    page -= 1;
-
     Post.find({ user: req.params.id })
+      .populate('user', 'profile_picture facebook.firstname facebook.first_name facebook.last_name')
       .sort({ created: 'desc' })
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page)
       .exec(((err, data) => {
       // Handle db error
         if (err) { res.status(500).send(err); }
         res.status(200).json(data);
       }));
   } else {
-    res.send('is not a friend');
+    res.status(403);
   }
 });
 
@@ -202,7 +196,7 @@ router.post('/:id/request', (req, res) => {
     });
 });
 
-// Cancel/ remove a friend request
+// Cancel / remove a friend request
 router.delete('/request/:id', (req, res) => {
   // Get request first to check current user is authorised to delete the friend request
   Request.findById(req.params.id)
@@ -279,11 +273,31 @@ router.get('/request', (req, res) => {
   });
 });
 
+// Get friend requests as recipient and issuer for particular user
+router.get('/:id/request', (req, res) => {
+  // Async requests for both request as recipient and issuer
+  async.parallel({
+    recipient_requests(callback) {
+      Request.find({ recipient: req.user._id, issuer: req.params.id })
+        .exec(callback);
+    },
+    issuer_requests(callback) {
+      Request.find({ issuer: req.user._id, recipient: req.params.id })
+        .exec(callback);
+    },
+  }, (err, results) => {
+    if (err) return res.status(500).send(err);
+
+    res.json(results);
+  });
+});
+
 // Get all the User ID's of users friends
 router.get('/friendsId', checkFriend, (req, res) => {
   res.status(200).json(req.friends);
 });
 
+// Get all users
 router.get('/users', (req, res) => {
   User.find()
     .select('-active -facebook.id -facebook.email')
@@ -295,6 +309,7 @@ router.get('/users', (req, res) => {
     }));
 });
 
+// Get user info by user ID
 router.get('/:id', checkFriend, (req, res) => {
   User.findById(req.params.id)
     .select('-active -facebook.id -facebook.email')

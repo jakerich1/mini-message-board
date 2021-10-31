@@ -16,8 +16,7 @@ const UserSchema = new Schema(
     created: { type: Date, required: true },
     active: { type: Boolean, required: true },
     relationship_status: { type: String, required: true },
-  },
-  {
+  }, {
     toJSON: { virtuals: true },
   },
 );
