@@ -1,16 +1,16 @@
-import { useAuth } from "./useAuth";
-import { Switch, Route, Redirect } from "react-router-dom";
-import User from "./components/User/User";
+import { React } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { useAuth } from './useAuth';
+import User from './components/User/User';
 import SignIn from './components/SignIn/SignIn';
-import Profile from "./components/Profile/Profile";
-import UsersPage from "./components/UsersPage/UsersPage";
-import Dashboard from "./components/Dashboard/Dashboard";
-import RequestsPage from "./components/RequestsPage/RequestsPage";
+import Profile from './components/Profile/Profile';
+import UsersPage from './components/UsersPage/UsersPage';
+import Dashboard from './components/Dashboard/Dashboard';
+import RequestsPage from './components/RequestsPage/RequestsPage';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import './baseStyle.scss';
 
 function App() {
-
   const auth = useAuth();
 
   return (
@@ -18,19 +18,18 @@ function App() {
 
       <Switch>
         <Route
-        exact path='/'
-        render={({ location }) =>
-        !auth.user ? (
+          exact
+          path="/"
+          render={() => (!auth.user ? (
             <SignIn />
-        ) : (
+          ) : (
             <Redirect
-                to={{
-                    pathname: "/dashboard",
-                }}
+              to={{
+                pathname: '/dashboard',
+              }}
             />
-        )
-        }
-        ></Route>
+          ))}
+        />
 
         <PrivateRoute exact path="/dashboard">
           <Dashboard />
@@ -44,12 +43,12 @@ function App() {
           <UsersPage />
         </PrivateRoute>
 
-        <PrivateRoute exact path='/u/:id'>
+        <PrivateRoute exact path="/u/:id">
           <User />
         </PrivateRoute>
 
-        <PrivateRoute path='/u'>
-          <Redirect to='/users' />
+        <PrivateRoute path="/u">
+          <Redirect to="/users" />
         </PrivateRoute>
 
         <PrivateRoute exact path="/requests">
@@ -57,7 +56,7 @@ function App() {
         </PrivateRoute>
 
       </Switch>
-      
+
     </div>
   );
 }

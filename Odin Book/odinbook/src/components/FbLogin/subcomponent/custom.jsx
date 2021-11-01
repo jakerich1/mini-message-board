@@ -1,8 +1,15 @@
-function Custom(props) {
+import { React } from 'react';
+import PropTypes from 'prop-types';
 
-    return (
-        <button onClick={props.onClick}>Login</button>
-    );
+function Custom(props) {
+  const { onClick } = props;
+  return (
+    <button type="button" onClick={onClick}>Login</button>
+  );
 }
+
+Custom.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
 
 export default Custom;

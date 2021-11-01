@@ -1,8 +1,12 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, createContext, useEffect } from 'react';
+import React, {
+  useState, useContext, createContext, useEffect,
+} from 'react';
 import { FacebookLoginClient } from '@greatsumini/react-facebook-login';
+// eslint-disable-next-line camelcase
+import jwt_decode from 'jwt-decode';
 import { callSignIn, callCheckAuth } from './api/api';
-import jwt_decode from "jwt-decode";
 
 const authContext = createContext();
 
@@ -13,21 +17,30 @@ export const useAuth = () => useContext(authContext);
 // Provider hook that creates auth object and handles state
 function useProvideAuth() {
   const [user, setUser] = useState(false);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const [jwt, setJWT] = useState('');
 
-  useEffect(() => {
-    checkAuth()
-}, [])
+  const checkAuth = async () => {
+    callCheckAuth().then(() => {
+      setUser(true);
+      setLoading(false);
+    }).catch(() => {
+      setUser(false);
+      setLoading(false);
+    });
+  };
 
-  const signin = async (access_token) => {
-    callSignIn(access_token).then(res => {
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const signin = async (accessToken) => {
+    callSignIn(accessToken).then((res) => {
       localStorage.setItem('jwt-fe', res.data.token);
       setJWT(res.data.token);
       setUser(true);
-    }).catch(errors => {
-      console.log(errors)
-    })
+    }).catch(() => {
+    });
   };
 
   const signout = () => {
@@ -38,17 +51,7 @@ function useProvideAuth() {
     });
   };
 
-  const checkAuth = async () => {
-    callCheckAuth().then(res => {
-      setUser(true);
-      setLoading(false);
-    }).catch(errors => {
-      setUser(false);
-      setLoading(false);
-    })
-  };
-
-  const jwtPayload = jwt ? jwt_decode(jwt)._id : ''
+  const jwtPayload = jwt_decode(localStorage.getItem('jwt-fe'))._id;
 
   // Return the user object and auth methods
   return {
@@ -58,7 +61,7 @@ function useProvideAuth() {
     signin,
     signout,
     checkAuth,
-    jwtPayload
+    jwtPayload,
   };
 }
 
