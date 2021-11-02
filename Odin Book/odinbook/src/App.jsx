@@ -13,6 +13,15 @@ import './baseStyle.scss';
 function App() {
   const auth = useAuth();
 
+  const conditionalSignIn = () => {
+    if (auth.user) {
+      return (
+        <Dashboard />
+      );
+    }
+    return (<SignIn />);
+  };
+
   return (
     <div className="App">
 
@@ -20,15 +29,7 @@ function App() {
         <Route
           exact
           path="/"
-          render={() => (!auth.user ? (
-            <SignIn />
-          ) : (
-            <Redirect
-              to={{
-                pathname: '/dashboard',
-              }}
-            />
-          ))}
+          render={() => conditionalSignIn()}
         />
 
         <PrivateRoute exact path="/dashboard">

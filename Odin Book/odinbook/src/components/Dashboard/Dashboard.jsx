@@ -97,6 +97,7 @@ function Dashboard() {
             <Post
               key={postVal._id}
               _id={postVal._id}
+              uid={postVal.user._id}
               profilePicture={postVal.user.profilePicture}
               content={postVal.content}
               firstName={postVal.user.facebook.firstName}

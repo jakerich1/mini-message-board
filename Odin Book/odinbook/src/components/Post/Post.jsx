@@ -14,6 +14,7 @@ import './style.scss';
 function Post(props) {
   const {
     _id,
+    uid,
     profilePicture,
     content,
     firstName,
@@ -111,7 +112,7 @@ function Post(props) {
         <img src={profilePicture} alt="profile mini" />
         <div className="post-detail">
           <div className="post-profile">
-            <Link to="/">{`${firstName} ${lastName}`}</Link>
+            <Link to={`/u/${uid}`}>{`${firstName} ${lastName}`}</Link>
           </div>
           <div className="post-date">
             {createdFormat}
@@ -218,6 +219,7 @@ function Post(props) {
 
 Post.propTypes = {
   _id: PropTypes.string.isRequired,
+  uid: PropTypes.string.isRequired,
   profilePicture: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
   firstName: PropTypes.string.isRequired,

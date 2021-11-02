@@ -10,10 +10,12 @@ function TopNav() {
     <nav>
       <Link to="/"><h1>OdinBook</h1></Link>
       <div className="nav-control">
-        <div className="profile">
-          <img src="./images/46.jpg" alt="mini profile" />
-          <div>Jacob</div>
-        </div>
+        <Link to="/profile">
+          <div className="profile">
+            <img src="./images/46.jpg" alt="mini profile" />
+            <div>Jacob</div>
+          </div>
+        </Link>
         <button type="button" onClick={auth.signout}>
           <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" fill="none" strokeLinecap="round" strokeLinejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />

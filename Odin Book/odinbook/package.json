@@ -8,6 +8,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.22.0",
+    "axios-auth-refresh": "^3.2.1",
     "jwt-decode": "^3.1.2",
     "luxon": "^2.0.2",
     "node-sass": "^6.0.1",

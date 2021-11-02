@@ -183,6 +183,7 @@ function User() {
               <Post
                 key={post._id}
                 _id={post._id}
+                uid={post.user._id}
                 content={post.content}
                 createdFormat={post.createdFormat}
                 firstName={post.user.facebook.firstName}

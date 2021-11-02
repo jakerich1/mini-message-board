@@ -51,7 +51,12 @@ function useProvideAuth() {
     });
   };
 
-  const jwtPayload = jwt_decode(localStorage.getItem('jwt-fe'))._id;
+  const jwtPayload = () => {
+    if (localStorage.getItem('jwt-fe')) {
+      return jwt_decode(localStorage.getItem('jwt-fe'))._id;
+    }
+    return '';
+  };
 
   // Return the user object and auth methods
   return {

@@ -15,6 +15,7 @@ function Profile() {
     fetchMyPosts().then((res) => {
       if (isSubscribed) {
         setFetchingPosts(false);
+
         setPosts(res.data);
       }
     }).catch(() => {});
@@ -48,6 +49,7 @@ function Profile() {
               <Post
                 key={postVal._id}
                 _id={postVal._id}
+                uid={postVal.user._id}
                 profilePicture={postVal.user.profilePicture}
                 content={postVal.content}
                 firstName={postVal.user.facebook.firstName}
