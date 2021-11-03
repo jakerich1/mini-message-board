@@ -36,9 +36,11 @@ function Dashboard() {
           setFetchingPosts(false);
           setPosts(updatedPosts);
         }
-      }).catch(() => {
+      }).catch((error) => {
         if (isSubscribed) {
           setFetchingPosts(false);
+          auth.setErrorMessage(error.message);
+          auth.setErrorModal(true);
         }
       });
     }
@@ -56,7 +58,9 @@ function Dashboard() {
       setPosts([]);
       setPage(1);
       setRefresh(!refresh);
-    }).catch(() => {
+    }).catch((error) => {
+      auth.setErrorMessage(error.message);
+      auth.setErrorModal(true);
     });
   };
 

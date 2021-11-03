@@ -3,11 +3,14 @@
 import { useEffect, useState, React } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchUsers, fetchFriendsId } from '../../api/api';
+import { useAuth } from '../../useAuth';
 import TopNav from '../TopNav/TopNav';
 import SideNav from '../SideNav/SideNav';
 import './style.scss';
 
 function UsersPage() {
+  const auth = useAuth();
+
   const [users, setUsers] = useState([]);
   const [friends, setFriends] = useState([]);
   const [fetched, setFetched] = useState(false);
@@ -36,7 +39,12 @@ function UsersPage() {
         setUsers(tmpOthers);
         setFetched(true);
       }
-    }).catch(() => {});
+    }).catch((error) => {
+      if (isSubscribed) {
+        auth.setErrorMessage(error.message);
+        auth.setErrorModal(true);
+      }
+    });
     return () => isSubscribed = false;
   }, []);
 
@@ -65,7 +73,14 @@ function UsersPage() {
               {users.map((user) => (
                 <Link key={user._id} to={`/u/${user._id}`}>
                   <div className="friend-item">
-                    <img alt="profile" src={user.profilePicture} />
+                    <div
+                      className="mini-user-profile"
+                      style={{
+                        backgroundImage: `url(${user.profilePicture})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                    />
                     <div className="name">
                       {`${user.facebook.firstName} ${user.facebook.lastName}`}
                     </div>
@@ -84,7 +99,14 @@ function UsersPage() {
               {friends.map((friend) => (
                 <Link key={friend._id} to={`/u/${friend._id}`}>
                   <div className="friend-item">
-                    <img alt="profile" src={friend.profilePicture} />
+                    <div
+                      className="mini-user-profile"
+                      style={{
+                        backgroundImage: `url(${friend.profilePicture})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                    />
                     <div className="name">
                       {`${friend.facebook.firstName} ${friend.facebook.lastName}`}
                     </div>

@@ -35,6 +35,8 @@ export const fetchPostInfo = async (postId) => apiInstance.get(`post/${postId}/i
 
 export const fetchUserPosts = async (userId) => apiInstance.get(`user/${userId}/posts`);
 
+export const deletePost = async (postId) => apiInstance.delete(`post/${postId}`);
+
 // Comment handling
 
 export const fetchComments = async (postId) => apiInstance.get(`comment/?postId=${postId}`);
@@ -44,6 +46,8 @@ export const submitComment = async (content, postId) => apiInstance.post('commen
 export const likeComment = async (commentId) => apiInstance.post(`comment/${commentId}/like`, {});
 
 export const fetchCommentInfo = async (commentId) => apiInstance.get(`comment/${commentId}/info`);
+
+export const deleteComment = async (commentId) => apiInstance.delete(`comment/${commentId}`);
 
 // Friend request handling
 
@@ -61,10 +65,22 @@ export const fetchUsers = async () => apiInstance.get('user/users');
 
 export const fetchFriendsId = async () => apiInstance.get('user/friendsId');
 
+// Authentication / User handling
+
 export const userInfo = async (userId) => apiInstance.get(`user/${userId}`);
 
-// Authentication handling
+export const updateRelationship = async (statusVal) => apiInstance.put('user/relationship', { status: statusVal });
+
+export const updateProfilePicture = async (url) => apiInstance.put('user/picture', { path: url });
 
 export const callSignIn = async (token) => apiInstance.post(`auth/facebook?access_token=${token}`);
 
 export const callCheckAuth = async () => apiInstance.get('user/');
+
+// Error handling
+
+export const submitError = async (errorMessage) => apiInstance.post('error/', { content: errorMessage });
+
+// Image upload handling
+
+export const getS3Url = async () => apiInstance.get('s3/');

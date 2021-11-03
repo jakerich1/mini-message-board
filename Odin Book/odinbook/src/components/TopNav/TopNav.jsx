@@ -1,10 +1,36 @@
-import { React } from 'react';
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable camelcase */
+import { React, useEffect, useState } from 'react';
+import jwt_decode from 'jwt-decode';
 import { Link } from 'react-router-dom';
+import { userInfo } from '../../api/api';
 import { useAuth } from '../../useAuth';
 import './style.scss';
 
 function TopNav() {
   const auth = useAuth();
+
+  const [name, setName] = useState('');
+  const [picture, setPicture] = useState('./images/placeholder.png');
+
+  // Fetch users info on page load to populate navbar
+  useEffect(() => {
+    let isSubscribed = true;
+
+    if (localStorage.getItem('jwt-fe')) {
+      userInfo(jwt_decode(localStorage.getItem('jwt-fe'))._id).then((res) => {
+        setName(res.data.facebook.firstName);
+        setPicture(res.data.profilePicture);
+      }).catch((error) => {
+        if (isSubscribed) {
+          auth.setErrorMessage(error.message);
+          auth.setErrorModal(true);
+        }
+      });
+    }
+
+    return () => { isSubscribed = false; };
+  }, []);
 
   return (
     <nav>
@@ -12,8 +38,15 @@ function TopNav() {
       <div className="nav-control">
         <Link to="/profile">
           <div className="profile">
-            <img src="./images/46.jpg" alt="mini profile" />
-            <div>Jacob</div>
+            <div
+              className="nav-image"
+              style={{
+                backgroundImage: `url(${picture})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+            <div>{name}</div>
           </div>
         </Link>
         <button type="button" onClick={auth.signout}>

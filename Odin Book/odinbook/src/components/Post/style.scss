@@ -9,7 +9,8 @@ article{
         display: flex;
         margin-bottom: 8px;
 
-        img{
+        .post-pic{
+            display: block;
             width: 42px;
             height: 42px;
             border-radius: 21px;
@@ -17,19 +18,58 @@ article{
         }
 
         .post-detail{
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
 
-            .post-profile{
+            .detail-left{
+
+                .post-profile{
                 
-                a{
-                    text-decoration: none;
-                    color: black;
+                    a{
+                        text-decoration: none;
+                        color: black;
+                    }
                 }
-            }
+    
+                .post-date{
+                    color: #5c5c5c;
+                    font-weight: 500;
+                    font-size: 12px;
+                }
+            }  
 
-            .post-date{
-                color: #5c5c5c;
-                font-weight: 500;
-                font-size: 12px;
+            .post-action{
+                position: relative;
+                
+                svg{
+                    cursor: pointer;
+                }
+
+                .action-box{
+                    position: absolute;
+                    right: 0;
+                    top: -40px;
+                    background: white;
+                    padding: 1em;
+                    width: max-content;
+                    border-radius: 16px;
+                    box-shadow: 1px 1px 1px 1px #e0e0e0;
+                    
+                    button{
+                        padding: 0.5em 2em;
+                        background: rgb(255, 83, 83);
+                        border: none;
+                        color: white;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.15s ease-in-out;
+
+                        &:hover{
+                            filter: brightness(0.95);
+                        }
+                    }
+                }
             }
         }
     }

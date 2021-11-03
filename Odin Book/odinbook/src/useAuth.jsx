@@ -20,6 +20,9 @@ function useProvideAuth() {
   const [loading, setLoading] = useState(true);
   const [jwt, setJWT] = useState('');
 
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorModal, setErrorModal] = useState(false);
+
   const checkAuth = async () => {
     callCheckAuth().then(() => {
       setUser(true);
@@ -67,6 +70,10 @@ function useProvideAuth() {
     signout,
     checkAuth,
     jwtPayload,
+    setErrorMessage,
+    errorMessage,
+    errorModal,
+    setErrorModal,
   };
 }
 

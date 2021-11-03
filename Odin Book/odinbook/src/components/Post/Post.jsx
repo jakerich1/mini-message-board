@@ -2,16 +2,21 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
 /* eslint-disable no-underscore-dangle */
+// eslint-disable-next-line camelcase
+import jwt_decode from 'jwt-decode';
 import { useState, useEffect, React } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useAuth } from '../../useAuth';
 import {
-  likePost, fetchPostInfo, fetchComments, submitComment,
+  likePost, fetchPostInfo, fetchComments, submitComment, deletePost,
 } from '../../api/api';
 import Comment from './Comment/Comment';
 import './style.scss';
 
 function Post(props) {
+  const auth = useAuth();
+
   const {
     _id,
     uid,
@@ -29,6 +34,11 @@ function Post(props) {
   const [refreshInfo, setRefreshInfo] = useState(true);
   const [fetchingInfo, setFetchingInfo] = useState(false);
 
+  // Post deletion state
+  const [isUsersPost, setIsUsersPost] = useState(false);
+  const [delVisible, setDelvisible] = useState(false);
+  const [postDeleted, setPostDeleted] = useState(false);
+
   // Comment state
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -37,23 +47,51 @@ function Post(props) {
   const [fetchingComments, setFetchingComments] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
 
+  const checkDelClick = (e) => {
+    if (e.target.className !== 'del-btn' && e.target.tagName !== 'svg') {
+      setDelvisible(false);
+    }
+  };
+
+  const handleDeletePost = () => {
+    deletePost(_id).then(() => {
+      setPostDeleted(true);
+    }).catch((error) => {
+      auth.setErrorMessage(error.message);
+      auth.setErrorModal(true);
+    });
+  };
+
   // Lifecycle method to get info of post
   useEffect(() => {
+    if (localStorage.getItem('jwt-fe')) {
+      if (jwt_decode(localStorage.getItem('jwt-fe'))._id === uid) {
+        setIsUsersPost(true);
+      }
+    }
+
+    window.addEventListener('click', checkDelClick);
+
     let isSubscribed = true;
     setFetchingInfo(true);
     fetchPostInfo(_id).then((res) => {
       if (isSubscribed) {
         setCommentCount(res.data.comment_count);
         setLikeCount(res.data.like_count);
-        setLiked(!!res.data.is_liked);
+        setLiked(res.data.is_liked);
         setFetchingInfo(false);
       }
-    }).catch(() => {
+    }).catch((error) => {
       if (isSubscribed) {
+        auth.setErrorMessage(error.message);
+        auth.setErrorModal(true);
         setFetchingInfo(false);
       }
     });
-    return () => isSubscribed = false;
+    return () => {
+      isSubscribed = false;
+      window.removeEventListener('click', checkDelClick);
+    };
   }, [_id, refreshInfo]);
 
   // Method to fetch comments of a post
@@ -66,8 +104,10 @@ function Post(props) {
           setComments(res.data);
           setFetchingComments(false);
         }
-      }).catch(() => {
+      }).catch((error) => {
         if (isSubscribed) {
+          auth.setErrorMessage(error.message);
+          auth.setErrorModal(true);
           setFetchingComments(false);
         }
       });
@@ -79,7 +119,9 @@ function Post(props) {
   const toggleLike = async () => {
     likePost(_id).then(() => {
       setRefreshInfo(!refreshInfo);
-    }).catch(() => {
+    }).catch((error) => {
+      auth.setErrorMessage(error.message);
+      auth.setErrorModal(true);
     });
   };
 
@@ -100,22 +142,44 @@ function Post(props) {
       setNewComment('');
       setRefreshInfo(!refreshInfo);
       setRefreshContent(!refreshContent);
-    }).catch(() => {
+    }).catch((error) => {
+      auth.setErrorMessage(error.message);
+      auth.setErrorModal(true);
       setNewComment('');
       setSubmittingComment(false);
     });
   };
 
   return (
-    <article>
+    <article style={{ display: postDeleted ? 'none' : 'block' }}>
       <div className="article-head">
-        <img src={profilePicture} alt="profile mini" />
+        <div
+          className="post-pic"
+          style={{
+            backgroundImage: `url(${profilePicture})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
         <div className="post-detail">
-          <div className="post-profile">
-            <Link to={`/u/${uid}`}>{`${firstName} ${lastName}`}</Link>
+          <div className="detail-left">
+            <div className="post-profile">
+              <Link to={`/u/${uid}`}>{`${firstName} ${lastName}`}</Link>
+            </div>
+            <div className="post-date">
+              {createdFormat}
+            </div>
           </div>
-          <div className="post-date">
-            {createdFormat}
+          <div style={{ display: isUsersPost ? 'block' : 'none' }} className="post-action">
+            <svg onClick={() => { setDelvisible(!delVisible); }} xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-dots" width="24" height="24" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#9e9e9e" fill="none" strokeLinecap="round" strokeLinejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <circle cx="5" cy="12" r="1" />
+              <circle cx="12" cy="12" r="1" />
+              <circle cx="19" cy="12" r="1" />
+            </svg>
+            <div style={{ display: delVisible ? 'block' : 'none' }} className="action-box">
+              <button onClick={handleDeletePost} className="del-btn" type="button">Delete post</button>
+            </div>
           </div>
         </div>
       </div>
@@ -185,6 +249,7 @@ function Post(props) {
             <Comment
               key={comment._id}
               _id={comment._id}
+              uid={comment.user._id}
               content={comment.content}
               profilePicture={comment.user.profilePicture}
               firstName={comment.user.facebook.firstName}
@@ -195,13 +260,12 @@ function Post(props) {
 
         <div className="write-comment">
           <form onSubmit={handleSubmit}>
-            <img src="./images/placeholder.png" alt="mini profile" />
             <textarea
               placeholder="write comment here"
               value={newComment}
               onInput={(e) => { setNewComment(e.target.value); autoGrow(e); }}
             />
-            <button type="button">
+            <button type="submit">
               <svg style={{ display: submittingComment ? 'block' : 'none' }} xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-rotate-clockwise" width="28" height="28" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />

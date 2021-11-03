@@ -1,10 +1,13 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-return-assign */
 import { useEffect, useState, React } from 'react';
+import { useAuth } from '../../useAuth';
 import { fetchRequests, acceptRequest, declineRequest } from '../../api/api';
 import './style.scss';
 
 function DashRequest() {
+  const auth = useAuth();
+
   const [request, setRequest] = useState(0);
   const [declining, setDeclining] = useState(false);
   const [requesting, setRequesting] = useState(false);
@@ -16,7 +19,9 @@ function DashRequest() {
       if (isSubscribed) {
         setRequest(res.data.recipient_requests ? res.data.recipient_requests[0] : 0);
       }
-    }).catch(() => {
+    }).catch((error) => {
+      auth.setErrorMessage(error.message);
+      auth.setErrorModal(true);
     });
     return () => isSubscribed = false;
   }, [toggleFetch]);
@@ -28,8 +33,10 @@ function DashRequest() {
         setRequesting(false);
         setRequest(0);
         setToggleFetch(!toggleFetch);
-      }).catch(() => {
+      }).catch((error) => {
         setRequesting(false);
+        auth.setErrorMessage(error.message);
+        auth.setErrorModal(true);
       });
     }
   };
@@ -41,8 +48,10 @@ function DashRequest() {
         setDeclining(false);
         setRequest(0);
         setToggleFetch(!toggleFetch);
-      }).catch(() => {
+      }).catch((error) => {
         setDeclining(false);
+        auth.setErrorMessage(error.message);
+        auth.setErrorModal(true);
       });
     }
   };

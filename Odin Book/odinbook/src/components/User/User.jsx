@@ -1,8 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import { DateTime } from 'luxon';
+// eslint-disable-next-line camelcase
+import jwt_decode from 'jwt-decode';
 import { useEffect, useState, React } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useAuth } from '../../useAuth';
 import {
   userInfo,
   fetchUserPosts,
@@ -10,14 +11,15 @@ import {
   sendFriendRequest,
   fetchUserRequests,
 } from '../../api/api';
+import { useAuth } from '../../useAuth';
 import Post from '../Post/Post';
 import TopNav from '../TopNav/TopNav';
 import SideNav from '../SideNav/SideNav';
 import './style.scss';
 
 function User() {
-  const auth = useAuth();
   const { id } = useParams();
+  const auth = useAuth();
   const history = useHistory();
 
   const [posts, setPosts] = useState([]);
@@ -35,8 +37,10 @@ function User() {
   // User Info
   useEffect(() => {
     // Redirect user to profile component if they are viewing their own profile
-    if (id === auth.jwtPayload) {
-      history.push('/profile');
+    if (localStorage.getItem('jwt-fe')) {
+      if (jwt_decode(localStorage.getItem('jwt-fe'))._id === id) {
+        history.push('/profile');
+      }
     }
 
     let isSubscribed = true;
@@ -48,7 +52,12 @@ function User() {
         setName(`${res.data.facebook.firstName} ${res.data.facebook.lastName}`);
         setCreated(DateTime.fromISO(res.data.created).toLocaleString(DateTime.DATE_MED));
       }
-    }).catch(() => {});
+    }).catch((error) => {
+      if (isSubscribed) {
+        auth.setErrorMessage(error.message);
+        auth.setErrorModal(true);
+      }
+    });
     return () => { isSubscribed = false; };
   }, [id, toggleInfo, toggleInfo]);
 
@@ -62,9 +71,11 @@ function User() {
           setFetchingPosts(false);
           setPosts(res.data);
         }
-      }).catch(() => {
+      }).catch((error) => {
         if (isSubscribed) {
           setFetchingPosts(false);
+          auth.setErrorMessage(error.message);
+          auth.setErrorModal(true);
         }
       });
     }
@@ -88,7 +99,12 @@ function User() {
             }
           }
         }
-      }).catch(() => {});
+      }).catch((error) => {
+        if (isSubscribed) {
+          auth.setErrorMessage(error.message);
+          auth.setErrorModal(true);
+        }
+      });
     }
     return () => { isSubscribed = false; };
   }, [id, friend, toggleRequest]);
@@ -119,7 +135,9 @@ function User() {
       sendFriendRequest(id).then(() => {
         setToggleRequest(!toggleRequest);
         setToggleInfo(!toggleInfo);
-      }).catch(() => {
+      }).catch((error) => {
+        auth.setErrorMessage(error.message);
+        auth.setErrorModal(true);
         setToggleRequest(!toggleRequest);
         setToggleInfo(!toggleInfo);
       });
@@ -130,7 +148,9 @@ function User() {
     declineRequest(requestId).then(() => {
       setToggleRequest(!toggleRequest);
       setToggleInfo(!toggleInfo);
-    }).catch(() => {
+    }).catch((error) => {
+      auth.setErrorMessage(error.message);
+      auth.setErrorModal(true);
       setToggleRequest(!toggleRequest);
       setToggleInfo(!toggleInfo);
     });

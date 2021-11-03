@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import User from './components/User/User';
 import SignIn from './components/SignIn/SignIn';
+import ErrorModal from './components/ErrorModal/ErrorModal';
 import Profile from './components/Profile/Profile';
 import UsersPage from './components/UsersPage/UsersPage';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -24,6 +25,8 @@ function App() {
 
   return (
     <div className="App">
+
+      {auth.errorModal ? <ErrorModal /> : ''}
 
       <Switch>
         <Route
