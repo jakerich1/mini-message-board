@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/certi-front/static/css/main.eaf21a37.chunk.css",
+    "main.js": "/certi-front/static/js/main.a0f2f3ce.chunk.js",
+    "main.js.map": "/certi-front/static/js/main.a0f2f3ce.chunk.js.map",
+    "runtime-main.js": "/certi-front/static/js/runtime-main.d513921a.js",
+    "runtime-main.js.map": "/certi-front/static/js/runtime-main.d513921a.js.map",
+    "static/js/2.3ba1b6ea.chunk.js": "/certi-front/static/js/2.3ba1b6ea.chunk.js",
+    "static/js/2.3ba1b6ea.chunk.js.map": "/certi-front/static/js/2.3ba1b6ea.chunk.js.map",
+    "static/js/3.dd746eeb.chunk.js": "/certi-front/static/js/3.dd746eeb.chunk.js",
+    "static/js/3.dd746eeb.chunk.js.map": "/certi-front/static/js/3.dd746eeb.chunk.js.map",
+    "index.html": "/certi-front/index.html",
+    "static/css/main.eaf21a37.chunk.css.map": "/certi-front/static/css/main.eaf21a37.chunk.css.map",
+    "static/js/2.3ba1b6ea.chunk.js.LICENSE.txt": "/certi-front/static/js/2.3ba1b6ea.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d513921a.js",
+    "static/js/2.3ba1b6ea.chunk.js",
+    "static/css/main.eaf21a37.chunk.css",
+    "static/js/main.a0f2f3ce.chunk.js"
+  ]
+}
